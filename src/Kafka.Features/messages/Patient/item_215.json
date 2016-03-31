@@ -1,0 +1,28 @@
+{
+  "identifier": [
+    {
+      "system": "URN:OID:2.3.abb10349-12f8-4355-b231-14263a65cde2",
+      "value": "ea2b3668-331f-47ed-b989-8d5e7554d5ac"
+    }
+  ],
+  "name": [
+    {
+      "use": "1",
+      "family": [ "LAMBERT" ],
+      "given": [ "JAKE" ]
+    }
+  ],
+  "gender": "Male",
+  "birthDate": { "text": "01-23-1974" },
+  "address": [
+    {
+      "addressLine": [ "7881 Metus Street" , "none"],
+      "city": "Duluth",
+      "region": "Minnesota",
+      "postalCode": "44629",
+      "country": "United States"
+    }
+  ],
+  "managingOrganization": { "display": "5a9020f5-e718-4b06-bb9a-0b6516d61566" },
+  "active": true
+}

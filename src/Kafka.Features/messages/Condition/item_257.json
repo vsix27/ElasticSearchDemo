@@ -1,0 +1,42 @@
+{
+  "identifier": [
+    {
+      "system": "2.16.840.1.113883.10.20.22.4.4",
+      "value": "HAC4865334",
+      "use": ""
+    }
+  ],
+  "patient": { "reference": "Patient/e6bc62d3b60825acb1e626e5da6b2d97" },
+  "code": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.6.103",
+        "code": "V04.81",
+        "display": "Need for prophylactic vaccination and inoculation against influenza",
+        "primary": false
+      }
+    ],
+    "text": "Need for prophylactic vaccination and inoculation against influenza"
+  },
+  "category": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.6.96",
+        "code": "55607006",
+        "display": "Problem",
+        "primary": true
+      }
+    ]
+  },
+  "clinicalStatus": "",
+  "onset": {
+    "onsetDateTime": {
+      "value": 635488074000000000,
+      "offset": 0,
+      "text": "20141013103000-0400"
+    }
+  },
+  "abatement": { "abatementString": "5/12/2015 1:39:10 PM" },
+  "resourceId": "779a0d8f10cbf65718349270e44a5b41",
+  "ResourceDocumentPath": "5wp1wt4xcded34mtc43ukcmqeepp8iapixxazjacmxb1dp3koeso/Condition/13"
+}

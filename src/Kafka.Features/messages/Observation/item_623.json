@@ -1,0 +1,29 @@
+{
+  "code": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.6.1",
+        "code": "72166-2",
+        "display": "Tobacco smoking status NHIS"
+      }
+    ]
+  },
+  "category": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.10.20.22.4.2",
+        "code": "Laboratory"
+      }
+    ],
+    "text": "Laboratory"
+  },
+  "identifier": [
+    {
+      "system": "2.16.840.1.113883.10.20.22.4.2",
+      "value": "NullFlavourTest"
+    }
+  ],
+  "subject": { "reference": "Patient/33b40000-065d-6451-8e9e-08d35406fc58" },
+  "resourceId": "33b40000-065d-6451-cc2c-08d35406fe91",
+  "ResourceDocumentPath": "5jaiir7arophn6ouy4ooubhutceq5nzc6wyeuf1gugsqajmehr8y/DiagnosticReport/2/Observation/1"
+}

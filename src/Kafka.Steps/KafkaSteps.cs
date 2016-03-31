@@ -2,6 +2,8 @@
 using KafkaNet.Common;
 using KafkaNet.Model;
 using KafkaNet.Protocol;
+
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -15,11 +17,27 @@ namespace Kafka.Steps
 {
     [Binding]
     public class KafkaSteps
-    {     
-        [Given(@"I have expression Random GUID")]
-        public void Given_I_have_expression_Random_GUID()
+    {
+        /// <summary>
+        /// put random list of messages into ScenarioContext.Current["kafkaMessages"]
+        /// </summary>
+        [Given(@"I have Random expressions")]
+        public void Given_I_have_Random_expressions()
         {
-            ScenarioContext.Current["kafkaMessage"] = Guid.NewGuid().ToString( "N");
+            Func<int, string> randomJson = (i) => { return $@"'main_{i}_{Guid.NewGuid().ToString("N")}':{{   
+                    'member':{i},  'date': '{DateTime.Now.AddDays(new Random().Next(-100, 100))}',
+                    'person': {{'fistname':'{Path.GetRandomFileName().Replace(".", "")}', 'lastname':'{Path.GetRandomFileName().Replace(".", "")}' }}
+                }}"; };
+
+            var lst = new List<Message>();
+            for (int k = 0; k < new Random().Next(2, 7); k++)
+                lst.Add(new Message(value: randomJson(k), key: $"random_{Guid.NewGuid().ToString("N") }"));
+
+            Console.WriteLine($" ==================  Random_expressions saved in Context; Items {lst.Count}");
+            Console.WriteLine($" ==================  Random_expressions saved in Context; first {lst.First().Value.ToUtf8String()}");
+            Console.WriteLine($" ==================  Random_expressions saved in Context; last {lst.Last().Value.ToUtf8String()}");
+
+            ScenarioContext.Current["kafkaMessages"] = lst;
         }
 
         [When(@"I send it to kafka (.*) server to (.*) topic")]
@@ -27,6 +45,8 @@ namespace Kafka.Steps
         {
             ScenarioContext.Current["kafkaTopic"] = topic;
             ScenarioContext.Current["kafkaServer"] = kafkaServer;
+
+            Console.WriteLine($" ==================  kafkaServer {kafkaServer}; topic {topic} ==================");
 
             var options = new KafkaOptions(new Uri("http://" + kafkaServer));
             //create a producer to send messages with
@@ -37,64 +57,41 @@ namespace Kafka.Steps
             };
 
             // get offset:
-            string testGuid = Guid.NewGuid().ToString("N");
-            var responseG = producer.SendMessageAsync(topic, new List<Message> { new Message(testGuid) }).Result;
-            long offsetG = responseG[0].Offset;
-            ScenarioContext.Current["offsetG"] = offsetG;
+            var to = new TopicOffset(producer.GetTopicOffsetAsync(topic).Result);
+            ScenarioContext.Current["kafkaOffsetBeforeProduce"] = to;
 
-            Console.WriteLine($" ==================  offsetG {offsetG} ==================");
-            int someMessages = 2;
-            ScenarioContext.Current["someMessages"] = someMessages;
-            SendRandomBatch(producer, topic, someMessages);
+            var kafkaMessages = ScenarioContext.Current["kafkaMessages"] as List<Message>;
 
-            string kafkaJson = $@"'main':{{
-                    'GUID': '{ScenarioContext.Current["kafkaMessage"]}',
-                    'date': '{DateTime.Now}',
-                    'person': {{ 'fistname':'Jason', 'lastname':'Consolo' }}
-                }}";
-                       
-            // send single main message                      
-            var response = producer.SendMessageAsync(topic, new[] { new Message(kafkaJson) }).Result;
-            
-            Console.WriteLine($"Completed send of batch: producer Buffered: {producer.BufferCount}; AsyncCount: {producer.AsyncCount};");
-            foreach (var result in response.OrderBy(x => x.PartitionId))
-                Console.WriteLine($"Topic: {result.Topic}; PartitionId: {result.PartitionId}; Offset: {result.Offset}");
+            Console.WriteLine($" ==================  FirstOffset {to.FirstOffset}; Items {to.Items} ==================");
 
-            ScenarioContext.Current["kafkaResult"] = Tuple.Create(kafkaJson, response.ToList());
+            // send messages                      
+            var response = SendRandomBatch(producer, topic, kafkaMessages).Result;
+
+            //Console.WriteLine($"Completed send of batch: producer Buffered: {producer.BufferCount}; AsyncCount: {producer.AsyncCount};");
+            //foreach (var result in response.OrderBy(x => x.PartitionId))
+            //    Console.WriteLine($"Topic: {result.Topic}; PartitionId: {result.PartitionId}; Offset: {result.Offset}");
+
+            // Tuple with string - first message jason, list of messages
+            ScenarioContext.Current["kafkaResult"] = Tuple.Create(kafkaMessages[0].Value.ToUtf8String(), response.ToList());
 
             using (producer)
             {
             }
         }
 
-        private static async void SendRandomBatch(Producer producer, string topic, int count)
+        private static async Task<ProduceResponse[]> SendRandomBatch(Producer producer, string topic, List<Message> messages)
         {
-            Func<string, string> kafkaJson = (info) => $@"'some':{{
-                    'id{info}': '{DateTime.Now.Ticks}',
-                    'date': '{DateTime.Now}',
-                    'guid': '{Guid.NewGuid().ToString("N")}',
-                    'person': {{'fistname':'{Path.GetRandomFileName().Replace(".", "")}', 'lastname':'{Path.GetRandomFileName().Replace(".", "")}' }}
-                }}";
-            if (count < 1) count = 1;
-            var messages = new List<Message>();
-            for (int k = 0; k < count; k++) messages.Add(new Message(kafkaJson($"_{k + 1}_of_{count}")));
+            //Console.WriteLine(" ==================  SendRandomBatch Start ==================");
 
-            Console.WriteLine(" ==================  SendRandomBatch Start ==================");
-
-            //send multiple messages
-            //var sendTask = producer.SendMessageAsync(topic, Enumerable.Range(0, count).Select(x => new Message(x.ToString())));
             var sendTask = producer.SendMessageAsync(topic, messages);
-
-            Console.WriteLine("Posted #{0} messages.  Buffered:{1} AsyncCount:{2}", count, producer.BufferCount, producer.AsyncCount);
-
+            Console.WriteLine("Posted #{0} messages.  Buffered:{1} AsyncCount:{2}", messages.Count, producer.BufferCount, producer.AsyncCount);
             var response = await sendTask;
+            Console.WriteLine("Completed send of batch: {0}. await Buffered:{1} AsyncCount:{2}", messages.Count, producer.BufferCount, producer.AsyncCount);
 
-            Console.WriteLine("Completed send of batch: {0}. Buffered:{1} AsyncCount:{2}", count, producer.BufferCount, producer.AsyncCount);
-
-            foreach (var result in response.OrderBy(x => x.PartitionId))
-                Console.WriteLine($"Topic: {result.Topic}; PartitionId:{result.PartitionId}; Offset:{result.Offset}");
-
-            Console.WriteLine(" ==================  SendRandomBatch End ==================");
+            //foreach (var result in response.OrderBy(x => x.PartitionId))
+            //    Console.WriteLine($"Topic: {result.Topic}; PartitionId:{result.PartitionId}; Offset:{result.Offset}");
+            //Console.WriteLine(" ==================  SendRandomBatch End ==================");
+            return response;
         }
 
 
@@ -104,27 +101,32 @@ namespace Kafka.Steps
             string topic = ScenarioContext.Current["kafkaTopic"].ToString();
             var options = new KafkaOptions(new Uri("http://" + ScenarioContext.Current["kafkaServer"]));
 
-            var someMessages  =  ScenarioContext.Current["someMessages"] ;
-            Console.WriteLine($" ==================  Expect {someMessages}+1 messages Start ==================");
-            long offsetG = long.Parse(ScenarioContext.Current["offsetG"].ToString());
-            var consumerG = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)), new OffsetPosition { Offset = offsetG });
-            int k = 0;
-            foreach (var data in consumerG.Consume(new CancellationTokenSource(seconds * 1000).Token))
-            {
-                var message = data.Value.ToUtf8String();
-                Console.WriteLine($"{k++}. consumerG: PartitionId {data.Meta.PartitionId}, Offset {data.Meta.Offset} : {message}");               
-            }
-            Console.WriteLine($" ==================  Expect {someMessages}+1 messages End   ==================");
+
+            var to = (TopicOffset)ScenarioContext.Current["kafkaOffsetBeforeProduce"];
+            if (to.Topic == null) to = GetProducerTopicOffset(options, topic, 5);
+            OffsetPosition offsetPosition = new OffsetPosition() { Offset = to.FirstOffset + to.Items, PartitionId = to.PartitionId };
+
+            var kafkaMessages = ScenarioContext.Current["kafkaMessages"] as List<Message>;
+
+            Console.WriteLine($" ==================  Expect messages Start - befofe consuming from Offset = {offsetPosition.Offset}; Count = {kafkaMessages.Count()} ");
 
 
+            //v1
+            //var dict = ConsumeMessagesTaskRun(topic, options, seconds, offsetPosition);
+            //var dict = ConsumeMessagesTaskRun(topic, options, 0, offsetPosition);
+            var dict = ConsumeMessages(topic, options, seconds, offsetPosition);
+            //var dict4 = ConsumeMessages(topic, options, 0, offsetPosition);
+            Console.WriteLine($" ==================  Expect messages End   ==================");
+
+            // Tuple - string - first message
             var result = (Tuple<string, List<ProduceResponse>>)ScenarioContext.Current["kafkaResult"];
 
-            var consumer = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)), new OffsetPosition { Offset = result.Item2[0].Offset });       
-            foreach (var data in consumer.Consume(new CancellationTokenSource(seconds * 1000).Token))
+            Console.WriteLine($" ============ looking to match result.Item1 and \n\t{result.Item1}");
+
+            foreach (var kvp in dict)
             {
-                var message = data.Value.ToUtf8String();
-                Console.WriteLine($"Response: PartitionId {data.Meta.PartitionId}, Offset {data.Meta.Offset} : {message}");
-                if (result.Item1 == message)
+                Console.WriteLine($" ======= loop to match result.Item1 to kvp.Value: \n\t{kvp.Value }");
+                if (result.Item1 == kvp.Value)
                 {
                     Assert.IsTrue(true);
                     return;
@@ -133,38 +135,77 @@ namespace Kafka.Steps
             Assert.IsTrue(false);
         }
 
-
-        private void ConsumeMessages(string topic,KafkaOptions options)
+        /// <summary>
+        /// returns dictionary with kvp: key - offset, value - json
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="options"></param>
+        /// <param name="delay"></param>
+        /// <param name="offsetPosition"></param>
+        /// <returns></returns>
+        private Dictionary<long, string> ConsumeMessagesTaskRun(string topic, KafkaOptions options, int delay = 0, OffsetPosition offsetPosition = null)
         {
+            var list = new Dictionary<long, string>();
+
             //start an out of process thread that runs a consumer that will write all received messages to the console
             Task.Run(() =>
             {
-                var consumer = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)) );
-                foreach (var data in consumer.Consume())
+                int k = 0;
+                var consumer = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)) { Log = new DefaultTraceLog() }, offsetPosition);
+                var messages = (delay < 1) ? consumer.Consume(null) : consumer.Consume(new CancellationTokenSource(delay * 1000).Token);
+                try
+                {
+                    foreach (var data in messages)
+                    {
+                        var message = data.Value.ToUtf8String();
+                        list.Add(data.Meta.Offset, message);
+                        Console.WriteLine($"{k++} [{topic}] TaskRun: PartitionId {data.Meta.PartitionId}, Offset {data.Meta.Offset}: {message}");
+                    }
+                }
+                catch (Exception ex) { Console.WriteLine($" -----------  topic:{topic}. {ex.Message}"); }
+            });
+            return list;
+        }
+
+        /// <summary>
+        /// returns dictionary with kvp: key - offset, value - json
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="options"></param>
+        /// <param name="delay"></param>
+        /// <param name="offsetPosition"></param>
+        /// <returns></returns>
+        private Dictionary<long, string> ConsumeMessages(string topic, KafkaOptions options, int delay, OffsetPosition offsetPosition)
+        {
+            var list = new Dictionary<long, string>();
+            int k = 0;
+            var consumer = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)) { Log = new DefaultTraceLog() }, offsetPosition);
+
+            try
+            {
+                var messages = (delay < 1) ? consumer.Consume(null) : consumer.Consume(new CancellationTokenSource(delay * 1000).Token);
+
+                foreach (var data in messages)
                 {
                     var message = data.Value.ToUtf8String();
-                    Console.WriteLine($"Response: PartitionId {data.Meta.PartitionId}, Offset {data.Meta.Offset} : {message}");
+                    var key = data.Key.ToUtf8String();
+                    list.Add(data.Meta.Offset, message);
+                    Console.WriteLine($"{k++} {DateTime.Now.ToString()} [{topic}] PartitionId {data.Meta.PartitionId}, Offset {data.Meta.Offset}, key: {key}, message {message}");
                 }
-            });
+            }
+            catch (Exception ex) { Console.WriteLine($" -----------  topic:{topic}. {ex.Message}"); }
+            finally
+            {
+                consumer.Dispose();
+            }
+            return list;
         }
 
 
         [Given(@"I have kafka brokers")]
         public void Given_I_have_kafka_brokers(Table table)
         {
-            string zookeeper = null;
-            var zooDict = new Dictionary<string, string>();
-            foreach (var row in table.Rows)
-            {
-                if (zookeeper != row["zookeeper"])
-                {
-                    zookeeper = row["zookeeper"];
-                    zooDict.Add(zookeeper, "");
-                }
-                zooDict[zookeeper] += ";" + row["kafka broker"];
-            }
-            //    |  zookeeper | kafka broker  |
-            ScenarioContext.Current["kafkaBrokers"] = zooDict;
+            TableToContextList("kafkaBrokers", table);
         }
 
         [When(@"I call kafka server")]
@@ -176,18 +217,28 @@ namespace Kafka.Steps
         [Given(@"I have kafka topics")]
         public void Given_I_have_kafka_topics(Table table)
         {
-            var list = new List<KeyValuePair<string, string>>();
+            TableToContextList("kafkaTopics", table);
+        }
+
+        [Given("I have kafka (.*)")]
+        public void Given_I_have_kafka_Organization(string topic)
+        {
+            ScenarioContext.Current["kafkaTopic"] = topic;
+        }
+
+        public void TableToContextList(string curContextName, Table table)
+        {
+            var list = new List<string>();
             foreach (var row in table.Rows)
-                list.Add(new KeyValuePair<string, string>(row[0], row[1]));
-            ScenarioContext.Current["kafkaTopics"] = list;
-            // | kafka broker  | topic  |
+                list.Add(row[0]);
+            ScenarioContext.Current[curContextName] = list;
         }
 
         private void DebugKafkaConsumer(Consumer cons, int seconds, string topic, string zoo, string offset)
         {
             try
             {
-                Console.WriteLine($"================ zoo {zoo}; topic {topic}; offset {offset}");             
+                Console.WriteLine($"================ zoo {zoo}; topic {topic}; offset {offset}");
 
                 try
                 {
@@ -203,81 +254,197 @@ namespace Kafka.Steps
                 //    var t = cons.GetTopicFromCache(topic);
                 //    foreach (var p in t.Partitions )
                 //    Console.WriteLine($"cons.GetTopicFromCache({topic}) ErrorCode {p.ErrorCode}; Isrs {p.Isrs}; LeaderId {p.LeaderId} PartitionId {p.PartitionId} Replicas Count {p.Replicas.Count}");
-                    
+
                 //    //var ts = cons.GetTopicOffsetAsync (topic,1, 1000).Result;
                 //    //Console.WriteLine($"ts ({ts}");
                 //}
                 //catch (Exception ex1) { Console.WriteLine(ex1); }
 
                 var messages = cons.Consume(new CancellationTokenSource(seconds * 1000).Token);
-                //try { var lcount = messages.Count(); } catch (Exception ex1) { Console.WriteLine(ex1); }
-                //try { var lcount = messages.LongCount(); } catch (Exception ex1) { Console.WriteLine(ex1); }
-                int k = 0;
-                foreach (var data in messages)
-                {
-                    var message = data.Value.ToUtf8String();
-                    Console.WriteLine($"{k++}  Response: PartitionId {data.Meta.PartitionId}, Offset{data.Meta.Offset} : {message}");
-                }
+
+                DebugKafkaMessages(messages, 10, $"for topic {topic} with delay cancel token seconds {seconds}");
             }
             catch (Exception ex) { Console.WriteLine(ex); }
         }
 
-        [Then(@"I should retreive it in (.*) seconds")]
-        public void Then_I_should_retreive_it_in_P0_seconds(int seconds)
+        private void DebugKafkaMessages(IEnumerable<Message> messages, int maxMessages = 10, string info = "")
         {
-            //    | kafka broker  | zookeeper |
-            var zooBrokers = ScenarioContext.Current["kafkaBrokers"] as Dictionary<string, string>;
-            Assert.IsNotNull(zooBrokers);
-
-            var listTopics = ScenarioContext.Current["kafkaTopics"] as List<KeyValuePair<string, string>>;
-            Assert.IsNotNull(listTopics);
-
-            foreach (var row in zooBrokers)
+            if (maxMessages < 1) maxMessages = 10000;
+            //System.Collections.Concurrent.BlockingCollection
+            int k = 0;
+            Console.WriteLine(" ================== start of DebugKafkaMessages " + info);
+            try
             {
-                string zoo = row.Key;
-
-                var topics = listTopics.Where(o => o.Key.Equals(zoo)).Select(o => o.Value).ToList();
-
-                var brokers = row.Value.Split("; ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                var options = new KafkaOptions();
-                foreach (string broker in brokers)
-                    options.KafkaServerUri.Add(new Uri("http://" + broker));
-
-            
-                foreach (string topic in topics)
+                foreach (var data in messages)
                 {
-                    try
-                    {                       
-                        //var cons0 = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)));
-                        //DebugKafkaConsumer(cons0, seconds, topic, zoo, "");
+                    var message = data.Value.ToUtf8String();
+                    //Console.WriteLine($"{k++}  Response: PartitionId {data.Meta.PartitionId}, Offset{data.Meta.Offset} : \n{message}");
+                    Console.WriteLine($"{k++}  Response: PartitionId {data.Meta.PartitionId}, \n{message}");
+                    if (k > maxMessages)
+                        break;
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex); }
+            Console.WriteLine(" ================== end of DebugKafkaMessages " + info);
+        }
 
-                        //var cons1 = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)), new OffsetPosition { Offset = -1 });
-                        //DebugKafkaConsumer(cons1, seconds, topic, zoo, "-1");
-
-                        //var cons2 = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)), new OffsetPosition { Offset = -2 });
-                        //DebugKafkaConsumer(cons2, seconds, topic, zoo, "-2");
-
-                        //var cons12 = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)), new OffsetPosition { Offset = -1 }, new OffsetPosition { Offset = -2 });
-                        //DebugKafkaConsumer(cons12, seconds, topic, zoo, "-1,-2");
-
-                        //var cons3 = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)), new OffsetPosition { Offset = 14 });
-                        //DebugKafkaConsumer(cons3, seconds, topic, zoo, "14");
-
-                        var cons4 = new Consumer(new ConsumerOptions(topic, new BrokerRouter(options)), new OffsetPosition { PartitionId=0 });
-                        DebugKafkaConsumer(cons4, seconds, topic, zoo, "10000");
-
-                        ZooKeeperNet.IWatcher watcher = null;
-                        var zkeeper = new ZooKeeperNet.ZooKeeper("http://" + zoo, new TimeSpan(0, 0, seconds), watcher);
-                        var watchermanager = new ZooKeeperNet.ZKWatchManager();
-                        var zconn = new ZooKeeperNet.ClientConnection("http://" + zoo, new TimeSpan(0, 0, seconds), zkeeper, watchermanager);
-                        zconn.Start();
-                        var zooClient = new ZooKeeperNet.ClientConnectionEventConsumer(zconn);
-                        //var offsets = cons.GetOffsetPosition();
-                        //var tcache = cons.GetTopicFromCache(topic);                        
-                    }
-                    catch (Exception ex) { Console.WriteLine($" -----------  zoo: {zoo}  topic:{topic}. {ex.Message}"); }
+        private void DebugOffsets(List<OffsetResponse> offsets)
+        {
+            foreach (var offs in offsets)
+            {
+                {
+                    string strOffsets = "";
+                    foreach (var off in offs.Offsets) strOffsets += off + ";";
+                    Console.WriteLine($" PartitionId {offs.PartitionId}; Offsets: {strOffsets}");
                 }
             }
         }
+
+        public struct TopicOffset
+        {
+            public long FirstOffset;
+            public long Items;
+            public int PartitionId;
+            public string Topic;
+            public TopicOffset(List<OffsetResponse> offsets)
+            {
+                FirstOffset = offsets[0].Offsets[1];
+                Items = offsets[0].Offsets[0] - offsets[0].Offsets[1];
+                PartitionId = offsets[0].PartitionId;
+                Topic = offsets[0].Topic;
+            }
+        }
+
+        private TopicOffset GetProducerTopicOffset(KafkaOptions options, string topic, int seconds)
+        {
+            var to = new TopicOffset();
+            try
+            {
+                using (var producer = new Producer(new BrokerRouter(options))
+                {
+                    BatchSize = 100,
+                    BatchDelayTime = TimeSpan.FromMilliseconds(2000)
+                })
+                {
+                    var offsets = producer.GetTopicOffsetAsync(topic).Result;
+                    to = new TopicOffset(offsets);
+                    Console.WriteLine($" GetProducerOffset {topic} : PartitionId: {to.PartitionId }; FirstOffset: {to.FirstOffset }; Items: {to.Items} ");
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex); }
+            return to;
+        }
+
+        private long GetProducerOffset(Producer producer, string topic)
+        {
+            var offsets = producer.GetTopicOffsetAsync(topic).Result;
+            return offsets[0].Offsets[0];
+        }
+
+        /*
+        you can get offset by calling: 
+            var responsePing = producer.SendMessageAsync(topic, new List<Message> { new Message(topic) }).Result;
+            long offsetPing = responsePing[0].Offset;
+                        
+        //var offsets = producer.GetTopicOffsetAsync(topic).Result;
+        //DebugOffsets(offsets);                                       
+
+         */
+
+        [Then(@"I should retrieve last (.*) messages in (.*) seconds")]
+        public void Then_I_should_retrieve_it_in_P0_seconds(int lastMessages, int seconds)
+        {
+            if (lastMessages < 0) lastMessages = 10;
+
+            var brokers = ScenarioContext.Current["kafkaBrokers"] as List<string>;
+            Assert.IsNotNull(brokers);
+
+            var topics = ScenarioContext.Current["kafkaTopics"] as List<string>;
+            if (topics == null && ScenarioContext.Current["kafkaTopic"] != null)
+                topics = new List<string> { ScenarioContext.Current["kafkaTopic"].ToString() };
+            Assert.IsNotNull(topics);
+
+            var options = new KafkaOptions();
+            foreach (string broker in brokers)
+                options.KafkaServerUri.Add(new Uri("http://" + broker));
+
+            int topicCount = 0;
+            foreach (string topic in topics)
+            {
+                topicCount++;
+                try
+                {
+                    TopicOffset to = GetProducerTopicOffset(options, topic, seconds);
+                    if (to.Items == 0)
+                    {
+                        Console.WriteLine($" GetProducerOffset {topic} does not have mesasges... ");
+                        continue;
+                    }
+
+                    // get last 5 messages, otherwise it chokes..
+                    long foffs = to.FirstOffset;
+                    if (to.Items > lastMessages) foffs += to.Items - lastMessages;
+
+                    OffsetPosition offsetPosition = new OffsetPosition() { Offset = foffs, PartitionId = to.PartitionId };
+
+                    //v1
+                    //Console.WriteLine($" ---- start 1 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
+                    //ConsumeMessagesTaskRun(topic, options, seconds, offsetPosition);
+
+                    //v2 no results:
+                    //Console.WriteLine($" ---- start 2 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
+                    //ConsumeMessagesTaskRun(topic, options, 0, offsetPosition);
+
+                    // v3 no results:
+                    Console.WriteLine($" ---- start 3 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
+                    ConsumeMessages(topic, options, seconds, offsetPosition);
+
+                    //v4
+                    //Console.WriteLine($" ---- start 4 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
+                    //ConsumeMessages(topic, options, 0, offsetPosition);
+
+                    //v5
+                    //var cancellationToken = new CancellationTokenSource(seconds * 1000);
+                    //Task.Factory.StartNew(() => ConsumeMessages(topic, options, 0, offsetPosition), cancellationToken.Token);
+                    //Thread.Sleep(5000); //simulate some other work
+                    //cancellationToken.Cancel(false); //this stops the Task??  false indicates that no exceptions will be thrown.
+
+                    Console.WriteLine($" ---- end ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
+                    continue;
+
+                }
+                catch (Exception ex) { Console.WriteLine($" -----------  topic:{topic}. {ex.Message}"); }
+            }
+        }
+
+        [Given(@"I have json file")]
+        public void Given_I_have_json_file()
+        {
+        }
+
+        [When(@"I parse it")]
+        public void When_I_parse_it()
+        {
+        }
+
+        [Then(@"I should be find in file (.*) matching json values")]
+        public void Then_I_should_be_find_in_file_P0_matching_json_values(string p0, Table table)
+        {
+            p0 = p0.Replace(">", "").Replace("<", "");
+            string jfile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, p0);
+            Assert.IsTrue(File.Exists(jfile));
+
+            var obj = JObject.Parse(File.ReadAllText(jfile));
+
+            foreach (var r in table.Rows)
+            {
+                var jpath = r["jsonpath"];
+                var jval = r["value"];
+                var found = (string)obj.SelectToken(jpath);
+                if (jval.Equals("null", StringComparison.OrdinalIgnoreCase)) jval = null;
+                Assert.AreEqual(found, jval);
+            }
+        }
+
     }
 }

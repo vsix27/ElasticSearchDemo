@@ -1,0 +1,41 @@
+{
+  "identifier": [
+    {
+      "system": "2.16.840.1.113883.4.6",
+      "value": "333222222Sep23_3PM",
+      "type": {
+        "coding": [
+          {
+            "system": "2.16.840.1.113883.4.6",
+            "code": "333222222Sep23_3PM"
+          }
+        ]
+      },
+      "use": ""
+    }
+  ],
+  "name": {
+    "family": [ "Script" ],
+    "given": [ "Susan" ],
+    "suffix": [ "Pharm.D." ]
+  },
+  "telecom": [
+    {
+      "system": "Phone",
+      "value": "1(555)555-1016",
+      "use": "Work"
+    }
+  ],
+  "address": [
+    {
+      "addressLine": [ "1016 Health Drive" ],
+      "city": "Portland",
+      "region": "OR",
+      "postalCode": "99123",
+      "country": "US"
+    }
+  ],
+  "practitionerRole": [ { "managingOrganization": { "reference": "Organization/d050582fb23042dd26a0a247f1d83e0d" } } ],
+  "resourceId": "efd09369eaad1abcafdb4e26a746d6e4",
+  "ResourceDocumentPath": "3mqzdxt93ch5p6gbsp35o9oup7jo5qo8jk7waomj5r336xz7cyno/MedicationStatement/4/MedicationDispense/1/Practitioner/1"
+}
