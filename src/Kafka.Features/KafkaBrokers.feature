@@ -4,34 +4,59 @@
 	I want to consume Kafka metadata
 
 
+#@FileProc_Kafka_prmlinux02
+#Scenario: Able to produce and consume kafka - prmlinux02 - messages
+#  Given I have Random expressions
+#  When I send it to kafka prmlinux02.cloudapp.net:9092 server to TestMessage topic
+#  Then I should consume it in 10 seconds
+## TestMessage
+
+#@FileProc_Kafka
+#Scenario: Able to produce and consume kafka - 172.26.11.135 - messages
+#  Given I have Random expressions
+#  When I send it to kafka 172.26.11.135:9092 server to TestMessage topic
+#  Then I should consume it in 10 seconds
+
 @FileProc_Kafka
-Scenario: Able to produce and consume kafka - prmlinux02 - messages
+Scenario: Able to produce and consume kafka - shortfusedev-dn9.westus.cloudapp.azure.com:9092 - messages to Claim topic
   Given I have Random expressions
-  When I send it to kafka prmlinux02.cloudapp.net:9092 server to TestMessage topic
+  When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to Claim topic
   Then I should consume it in 10 seconds
-# TestMessage
+
 
 
 @FileProc_Kafka
-Scenario: Able to produce and consume kafka - shortfusedev - messages
+Scenario: Able to produce and consume kafka - 172.26.8.26 - messages
+  Given I have Random expressions
+  When I send it to kafka 172.26.8.26:9092 server to TestMessage topic
+  Then I should consume it in 10 seconds
+
+
+#fusetest, fusetest2, fusetopic2, test
+@FileProc_Kafka_shortfusedev
+Scenario: Able to produce and consume kafka - shortfusedev - messages to fusetest topic
   Given I have Random expressions
   When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to fusetest topic
   Then I should consume it in 10 seconds
   # test
 
+
 # from zookeper 172.26.8.13:2181
-@FileProc_Kafka
+@FileProc_Kafka_shortfusedev
 Scenario: Able to consume kafka - shortfusedev
   Given I have kafka brokers 
 	| kafka broker                                     |
 	| shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
-	| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
-	| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
-	| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
+	#| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+	#| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+	#| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
   And I have kafka topics
 	| topic        | info                       |
-	| Immunization | FirstOffset: 129; Items: 3 |
-	| Condition    | FirstOffset: 258; Items: 7 |
+	| Coverage | FirstOffset: xx; Items: 3 |
+	#| fusetest | FirstOffset: x; Items: 3 |
+	#| Claim | FirstOffset: x; Items: 3 |
+	#| Immunization | FirstOffset: 129; Items: 3 |
+	#| Condition    | FirstOffset: 258; Items: 7 |
 	#| DiagnosticReport    | FirstOffset: 61; Items: 2 (53, 10)   |
 	#| Patient             | FirstOffset: 217; Items: 3 (198, 22) |
 	#| FamilyMemberHistory | FirstOffset: 16; Items: 2            |
@@ -39,28 +64,66 @@ Scenario: Able to consume kafka - shortfusedev
 	#| AllergyIntolerance  | FirstOffset: 51; Items: 8            |
   When I call kafka server
   Then I should retrieve last 3 messages in 10 seconds
-  #And  I should retrieve from kafka4net last 3 messages in 10 seconds
  
   
 
 # from zookeeper prmlinux02.cloudapp.net:2181
+#@FileProc_Kafka
+#Scenario: Able to consume kafka - prmlinux02 
+#  Given I have kafka brokers 
+#	| kafka broker                 |
+#	| prmlinux02.cloudapp.net:9092 |	 
+#  And I have kafka topics
+#    | topic        | info         |
+#    | Practitioner | 140 messages |
+#    #| Test_Claim   | 55 messages  |
+#    #| TestMessage  | 70 messages  |	
+#    #| Organization | 4 messages  v1 |
+#    #| Claim        | 4 messages  v1 |
+#    #| Coverage     | 2 messages  v1 |
+#    #| Patient      | 2 messages  v1 |
+#	#connot combine 1 and 3???
+#  When I call kafka server
+#  Then I should retrieve last 3 messages in 30 seconds
+
 @FileProc_Kafka
-Scenario: Able to consume kafka - prmlinux02 
+Scenario: Able to consume kafka - 172.26.11.135 
   Given I have kafka brokers 
 	| kafka broker                 |
-	| prmlinux02.cloudapp.net:9092 |	 
+	| 172.26.11.135:9092 |	 
   And I have kafka topics
-    | topic        | info         |
-    | Practitioner | 140 messages |
-    | Test_Claim   | 55 messages  |
-    | TestMessage  | 70 messages  |	
-    | Organization | 4 messages  v1 |
-    | Claim        | 4 messages  v1 |
-    | Coverage     | 2 messages  v1 |
-    | Patient      | 2 messages  v1 |
+    | topic        | info        |
+    | Practitioner | 10 messages |
+    | Patient      | 4 messages  |
+    #| Test_Claim   | 55 messages  |
+    #| TestMessage  | 70 messages  |	
+    #| Organization | 4 messages  v1 |
+    #| Claim        | 4 messages  v1 |
+    #| Coverage     | 2 messages  v1 |
+    #| Patient      | 2 messages  v1 |
 	#connot combine 1 and 3???
   When I call kafka server
   Then I should retrieve last 3 messages in 30 seconds
+
+@FileProc_Kafka
+Scenario: Able to consume kafka - 172.26.8.26 
+  Given I have kafka brokers 
+	| kafka broker                 |
+	| 172.26.8.26:9092 |	 
+  And I have kafka topics
+    | topic        | info        |
+    | Practitioner | 10 messages |
+    | Patient      | 4 messages  |
+    #| Test_Claim   | 55 messages  |
+    #| TestMessage  | 70 messages  |	
+    #| Organization | 4 messages  v1 |
+    #| Claim        | 4 messages  v1 |
+    #| Coverage     | 2 messages  v1 |
+    #| Patient      | 2 messages  v1 |
+	#connot combine 1 and 3???
+  When I call kafka server
+  Then I should retrieve last 3 messages in 30 seconds
+
 
 #@FileProc_Kafka
 #Scenario Outline: Able to consume kafka prmlinux02.cloudapp.net by topic
@@ -80,7 +143,6 @@ Scenario: Able to consume kafka - prmlinux02
 #    | Test_Claim   | 16 messages |
 #    | TestMessage  | 3 messages  |
 
-
   @FileProc_Json
   Scenario: Able to parse json message Patient
   Given I have json file  
@@ -97,9 +159,10 @@ Scenario: Able to consume kafka - prmlinux02
   Given I have json file  
   When I parse it 
   Then I should be find in file <messages\Condition\item_257.json> matching json values
-    | jsonpath                   | value    |
-    | code.coding[0].code        | V04.81   |
-    | category.coding[0].code    | 55607006 |
-    | category.coding[0].primary | True     |
-    | onset.onsetDateTime.offset | 0        |
+    | jsonpath                                 | value    |
+    | category.coding[?(@.code=='ccc')].system | xxx      |
+    | code.coding[0].code                      | V04.81   |
+    | category.coding[0].code                  | 55607006 |
+    | category.coding[0].primary               | True     |
+    | onset.onsetDateTime.offset               | 0        |
   

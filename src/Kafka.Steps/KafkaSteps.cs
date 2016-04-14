@@ -308,8 +308,13 @@ namespace Kafka.Steps
             public string Topic;
             public TopicOffset(List<OffsetResponse> offsets)
             {
-                FirstOffset = offsets[0].Offsets[1];
-                Items = offsets[0].Offsets[0] - offsets[0].Offsets[1];
+                FirstOffset = Items = 0;
+
+                if (offsets[0].Offsets.Count > 1)
+                {
+                    FirstOffset = offsets[0].Offsets[1];
+                    Items = offsets[0].Offsets[0] - FirstOffset;
+                }
                 PartitionId = offsets[0].PartitionId;
                 Topic = offsets[0].Topic;
             }
@@ -417,6 +422,31 @@ namespace Kafka.Steps
             }
         }
 
+        // bad
+        //[Then("I should retrieve from another SimpleKafka nuget last (.*) messages in (.*) seconds")]
+        //public void Then_I_should_retrieve_from_another_nuget_kafka_last_P0_messages_in_P1_seconds(int lastMessages, int seconds)
+        //{
+        //    var kbrokers = ScenarioContext.Current["kafkaBrokers"] as List<string>;
+        //    Assert.IsNotNull(kbrokers);
+
+        //    var topics = ScenarioContext.Current["kafkaTopics"] as List<string>;
+
+        //    var brokers = new SimpleKafka.KafkaBrokers(kbrokers.Select(o => new Uri("http://" + o)).ToArray());
+
+        //    using (var broker = brokers)
+        //    {
+        //        var consumer = SimpleKafka.KafkaConsumer.Create(
+        //            topics[0], brokers, 
+        //            new SimpleKafka.StringSerializer(),
+        //            new SimpleKafka.TopicSelector { Topic = topics[0], Partition = 0, Offset = 0 });
+        //        var result = consumer.ReceiveAsync(CancellationToken.None).Result;
+        //        foreach (var message in result)
+        //        {
+        //            Console.WriteLine("Received {0}", message.Value);
+        //        }
+        //    }
+        //}
+
         [Given(@"I have json file")]
         public void Given_I_have_json_file()
         {
@@ -440,6 +470,7 @@ namespace Kafka.Steps
             {
                 var jpath = r["jsonpath"];
                 var jval = r["value"];
+                var val = obj.SelectToken(jpath);
                 var found = (string)obj.SelectToken(jpath);
                 if (jval.Equals("null", StringComparison.OrdinalIgnoreCase)) jval = null;
                 Assert.AreEqual(found, jval);

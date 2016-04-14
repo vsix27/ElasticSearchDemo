@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Google.ProtocolBuffers;
 using Hl7.Fhir.ModelFake;
 
@@ -28,22 +29,17 @@ namespace Kafka.Steps
             File.WriteAllText(outputFilePath, text);
         }
 
-        internal static void WriteOntologiesToJson(string testFile, List<Tuple<ResourceType, IMessageLite>> generatedOntologyObjects)
+        internal static string WriteOntologiesToJson(string testFile, List<Tuple<ResourceType, IMessageLite>> generatedOntologyObjects)
         {
             string tmp = Path.GetTempPath();
             File.Delete(tmp);
 
-            string outputFilePath = tmp + "_allOntologies.json";
-               
-            //serialize and write
-            string text = string.Empty;
-            foreach (Tuple<ResourceType, IMessageLite> generatedOntologyObject in generatedOntologyObjects)
-            {
-                text += String.Format("{0}: {1}{2}{1}",
-                    generatedOntologyObject.Item1, Environment.NewLine, generatedOntologyObject.Item2.ToJson());
-            }
+            Func<Tuple<ResourceType, IMessageLite>, string> all = (x) => $"{x.Item1}: \n{x.Item2.ToJson()}\n";
+            string text =  generatedOntologyObjects.Select(x => all(x)).Aggregate((x, y) => x + y);           
 
+            string outputFilePath = tmp + "_allOntologies.json";
             File.WriteAllText(outputFilePath, text);
+            return outputFilePath;
         }
     }
 }

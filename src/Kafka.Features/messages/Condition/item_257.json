@@ -25,6 +25,18 @@
         "code": "55607006",
         "display": "Problem",
         "primary": true
+      },
+      {
+        "system": "xxx",
+        "code": "ccc",
+        "display": "Problem",
+        "primary": true
+      },
+      {
+        "system": "yyy",
+        "code": "bbb",
+        "display": "Problem",
+        "primary": true
       }
     ]
   },
