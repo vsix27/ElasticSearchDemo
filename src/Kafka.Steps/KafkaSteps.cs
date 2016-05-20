@@ -9,8 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 using TechTalk.SpecFlow;
 
 namespace Kafka.Steps
@@ -71,7 +74,7 @@ namespace Kafka.Steps
             //foreach (var result in response.OrderBy(x => x.PartitionId))
             //    Console.WriteLine($"Topic: {result.Topic}; PartitionId: {result.PartitionId}; Offset: {result.Offset}");
 
-            // Tuple with string - first message jason, list of messages
+            // Tuple with string - first message json, list of messages
             ScenarioContext.Current["kafkaResult"] = Tuple.Create(kafkaMessages[0].Value.ToUtf8String(), response.ToList());
 
             using (producer)
@@ -448,13 +451,56 @@ namespace Kafka.Steps
         //}
 
         [Given(@"I have json file")]
+        [Given(@"I have xml content")]
         public void Given_I_have_json_file()
         {
         }
 
         [When(@"I parse it")]
+        [When(@"I load it")]
         public void When_I_parse_it()
         {
+        }
+
+        [Then(@"It should be loaded")]
+        public void Then_It_should_be_loaded()
+        {
+            #region prepare test xml file
+            string xml = "<?xml version='1.0'?><Base><Person>me</Person>" +
+                $"<Time>{DateTime.Now.ToString()}</Time>" +
+                "<Person>you</Person></Base>";
+            string exmlContent = Path.GetTempFileName();
+            File.Delete(exmlContent);
+            exmlContent += ".xml";
+            File.WriteAllText(exmlContent, xml);
+            Console.WriteLine("expected:\n\t" + File.ReadAllText(exmlContent));
+            #endregion
+
+            XmlDocument xmlDocumentClaims = new XmlDocument() { XmlResolver = new CustomUrlResovler() };
+            try
+            {
+                xmlDocumentClaims.Load(exmlContent);
+            }
+            catch (XmlException xmlE)
+            {
+                Console.WriteLine("Load stream into XML document failed with error: " + xmlE.Message);
+                throw xmlE;
+            }
+
+            Console.WriteLine("loaded file:\n" + xmlDocumentClaims.OuterXml);
+
+            try
+            {
+                MemoryStream mStrm = new MemoryStream(Encoding.UTF8.GetBytes(xml));
+                var settings = new XmlReaderSettings { XmlResolver = new CustomUrlResovler() };
+                var reader = XmlReader.Create(mStrm, settings);
+                XDocument exmlXDocument = XDocument.Load(reader);
+                Console.WriteLine("loaded stream:\n" + exmlXDocument.ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Load stream into XML document failed with error: " + ex.Message);                 
+            }
         }
 
         [Then(@"I should be find in file (.*) matching json values")]

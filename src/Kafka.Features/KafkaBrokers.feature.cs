@@ -66,22 +66,60 @@ namespace Kafka.Features
         }
         
         [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Able to produce and consume kafka - prmlinux02 - messages")]
+        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_produce")]
+        public virtual void AbleToProduceAndConsumeKafka_Prmlinux02_Messages()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to produce and consume kafka - prmlinux02 - messages", new string[] {
+                        "FileProc_Kafka_produce"});
+#line 10
+this.ScenarioSetup(scenarioInfo);
+#line 11
+  testRunner.Given("I have Random expressions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 12
+  testRunner.When("I send it to kafka prmlinux02.cloudapp.net:9092 server to TestMessage topic", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 13
+  testRunner.Then("I should consume it in 10 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Able to produce and consume kafka - 172.26.11.135 - messages")]
+        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_produce")]
+        public virtual void AbleToProduceAndConsumeKafka_172_26_11_135_Messages()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to produce and consume kafka - 172.26.11.135 - messages", new string[] {
+                        "FileProc_Kafka_produce"});
+#line 17
+this.ScenarioSetup(scenarioInfo);
+#line 18
+  testRunner.Given("I have Random expressions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 19
+  testRunner.When("I send it to kafka 172.26.11.135:9092 server to TestMessage topic", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 20
+  testRunner.Then("I should consume it in 10 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Able to produce and consume kafka - shortfusedev-dn9.westus.cloudapp.azure.com:90" +
             "92 - messages to Claim topic")]
-        [NUnit.Framework.CategoryAttribute("FileProc_Kafka")]
+        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_produce")]
         public virtual void AbleToProduceAndConsumeKafka_Shortfusedev_Dn9_Westus_Cloudapp_Azure_Com9092_MessagesToClaimTopic()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to produce and consume kafka - shortfusedev-dn9.westus.cloudapp.azure.com:90" +
                     "92 - messages to Claim topic", new string[] {
-                        "FileProc_Kafka"});
-#line 21
-this.ScenarioSetup(scenarioInfo);
-#line 22
-  testRunner.Given("I have Random expressions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+                        "FileProc_Kafka_produce"});
 #line 23
+this.ScenarioSetup(scenarioInfo);
+#line 24
+  testRunner.Given("I have Random expressions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 25
   testRunner.When("I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to Clai" +
                     "m topic", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 24
+#line 26
   testRunner.Then("I should consume it in 10 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -89,18 +127,18 @@ this.ScenarioSetup(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Able to produce and consume kafka - 172.26.8.26 - messages")]
-        [NUnit.Framework.CategoryAttribute("FileProc_Kafka")]
+        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_produce")]
         public virtual void AbleToProduceAndConsumeKafka_172_26_8_26_Messages()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to produce and consume kafka - 172.26.8.26 - messages", new string[] {
-                        "FileProc_Kafka"});
-#line 29
-this.ScenarioSetup(scenarioInfo);
-#line 30
-  testRunner.Given("I have Random expressions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+                        "FileProc_Kafka_produce"});
 #line 31
-  testRunner.When("I send it to kafka 172.26.8.26:9092 server to TestMessage topic", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+this.ScenarioSetup(scenarioInfo);
 #line 32
+  testRunner.Given("I have Random expressions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 33
+  testRunner.When("I send it to kafka 172.26.8.26:9092 server to TestMessage topic", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 34
   testRunner.Then("I should consume it in 10 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -108,19 +146,19 @@ this.ScenarioSetup(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Able to produce and consume kafka - shortfusedev - messages to fusetest topic")]
-        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_shortfusedev")]
+        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_produce")]
         public virtual void AbleToProduceAndConsumeKafka_Shortfusedev_MessagesToFusetestTopic()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to produce and consume kafka - shortfusedev - messages to fusetest topic", new string[] {
-                        "FileProc_Kafka_shortfusedev"});
-#line 37
-this.ScenarioSetup(scenarioInfo);
-#line 38
-  testRunner.Given("I have Random expressions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+                        "FileProc_Kafka_produce"});
 #line 39
+this.ScenarioSetup(scenarioInfo);
+#line 40
+  testRunner.Given("I have Random expressions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 41
   testRunner.When("I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to fuse" +
                     "test topic", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 40
+#line 42
   testRunner.Then("I should consume it in 10 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -128,104 +166,77 @@ this.ScenarioSetup(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Able to consume kafka - shortfusedev")]
-        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_shortfusedev")]
+        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_consume")]
         public virtual void AbleToConsumeKafka_Shortfusedev()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to consume kafka - shortfusedev", new string[] {
-                        "FileProc_Kafka_shortfusedev"});
-#line 46
+                        "FileProc_Kafka_consume"});
+#line 48
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "kafka broker"});
             table1.AddRow(new string[] {
                         "shortfusedev-dn9.westus.cloudapp.azure.com:9092"});
-#line 47
+            table1.AddRow(new string[] {
+                        "shortfusedev-dn8.westus.cloudapp.azure.com:9092"});
+            table1.AddRow(new string[] {
+                        "shortfusedev-dn10.westus.cloudapp.azure.com:9092"});
+            table1.AddRow(new string[] {
+                        "shortfusedev-dn11.westus.cloudapp.azure.com:9092"});
+#line 49
   testRunner.Given("I have kafka brokers", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "topic",
                         "info"});
             table2.AddRow(new string[] {
-                        "Coverage",
+                        "Location",
                         "FirstOffset: xx; Items: 3"});
-#line 53
+#line 55
   testRunner.And("I have kafka topics", ((string)(null)), table2, "And ");
-#line 65
+#line 68
   testRunner.When("I call kafka server", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 66
+#line 69
   testRunner.Then("I should retrieve last 3 messages in 10 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Able to consume kafka - 172.26.11.135")]
-        [NUnit.Framework.CategoryAttribute("FileProc_Kafka")]
-        public virtual void AbleToConsumeKafka_172_26_11_135()
+        [NUnit.Framework.DescriptionAttribute("Able to consume kafka - 172.26.8.26-29")]
+        [NUnit.Framework.CategoryAttribute("FileProc_Kafka_consume")]
+        public virtual void AbleToConsumeKafka_172_26_8_26_29()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to consume kafka - 172.26.11.135", new string[] {
-                        "FileProc_Kafka"});
-#line 90
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to consume kafka - 172.26.8.26-29", new string[] {
+                        "FileProc_Kafka_consume"});
+#line 76
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "kafka broker"});
             table3.AddRow(new string[] {
-                        "172.26.11.135:9092"});
-#line 91
+                        "172.26.8.26:9092"});
+            table3.AddRow(new string[] {
+                        "172.26.8.27:9092"});
+            table3.AddRow(new string[] {
+                        "172.26.8.28:9092"});
+            table3.AddRow(new string[] {
+                        "172.26.8.29:9092"});
+#line 77
   testRunner.Given("I have kafka brokers", ((string)(null)), table3, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "topic",
                         "info"});
             table4.AddRow(new string[] {
-                        "Practitioner",
-                        "10 messages"});
-            table4.AddRow(new string[] {
-                        "Patient",
+                        "fusetest",
                         "4 messages"});
-#line 94
+#line 83
   testRunner.And("I have kafka topics", ((string)(null)), table4, "And ");
-#line 105
+#line 95
   testRunner.When("I call kafka server", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 106
-  testRunner.Then("I should retrieve last 3 messages in 30 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Able to consume kafka - 172.26.8.26")]
-        [NUnit.Framework.CategoryAttribute("FileProc_Kafka")]
-        public virtual void AbleToConsumeKafka_172_26_8_26()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to consume kafka - 172.26.8.26", new string[] {
-                        "FileProc_Kafka"});
-#line 109
-this.ScenarioSetup(scenarioInfo);
-#line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
-                        "kafka broker"});
-            table5.AddRow(new string[] {
-                        "172.26.8.26:9092"});
-#line 110
-  testRunner.Given("I have kafka brokers", ((string)(null)), table5, "Given ");
-#line hidden
-            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
-                        "topic",
-                        "info"});
-            table6.AddRow(new string[] {
-                        "Practitioner",
-                        "10 messages"});
-            table6.AddRow(new string[] {
-                        "Patient",
-                        "4 messages"});
-#line 113
-  testRunner.And("I have kafka topics", ((string)(null)), table6, "And ");
-#line 124
-  testRunner.When("I call kafka server", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 125
+#line 96
   testRunner.Then("I should retrieve last 3 messages in 30 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -238,30 +249,30 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse json message Patient", new string[] {
                         "FileProc_Json"});
-#line 147
+#line 118
   this.ScenarioSetup(scenarioInfo);
-#line 148
+#line 119
   testRunner.Given("I have json file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 149
+#line 120
   testRunner.When("I parse it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "jsonpath",
                         "value"});
-            table7.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "name[0].family[0]",
                         "LAMBERT"});
-            table7.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "address[0].addressLine[0]",
                         "7881 Metus Street"});
-            table7.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "address[0].addressLine[1]",
                         "none"});
-            table7.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "address[0].addressLine[2]",
                         "null"});
-#line 150
-  testRunner.Then("I should be find in file <messages\\Patient\\item_215.json> matching json values", ((string)(null)), table7, "Then ");
+#line 121
+  testRunner.Then("I should be find in file <messages\\Patient\\item_215.json> matching json values", ((string)(null)), table5, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -273,33 +284,52 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse json message Condition", new string[] {
                         "FileProc_Json"});
-#line 158
+#line 129
   this.ScenarioSetup(scenarioInfo);
-#line 159
+#line 130
   testRunner.Given("I have json file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 160
+#line 131
   testRunner.When("I parse it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "jsonpath",
                         "value"});
-            table8.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "category.coding[?(@.code==\'ccc\')].system",
                         "xxx"});
-            table8.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "code.coding[0].code",
                         "V04.81"});
-            table8.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "category.coding[0].code",
                         "55607006"});
-            table8.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "category.coding[0].primary",
                         "True"});
-            table8.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "onset.onsetDateTime.offset",
                         "0"});
-#line 161
-  testRunner.Then("I should be find in file <messages\\Condition\\item_257.json> matching json values", ((string)(null)), table8, "Then ");
+#line 132
+  testRunner.Then("I should be find in file <messages\\Condition\\item_257.json> matching json values", ((string)(null)), table6, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Able to parse xml message with XmlResolver")]
+        [NUnit.Framework.CategoryAttribute("Xml_validation_XXE")]
+        public virtual void AbleToParseXmlMessageWithXmlResolver()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse xml message with XmlResolver", new string[] {
+                        "Xml_validation_XXE"});
+#line 142
+  this.ScenarioSetup(scenarioInfo);
+#line 143
+  testRunner.Given("I have xml content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 144
+  testRunner.When("I load it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 145
+  testRunner.Then("It should be loaded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

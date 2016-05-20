@@ -2,22 +2,24 @@
 	In order to avoid silly mistakes
 	As an Kafka amateur
 	I want to consume Kafka metadata
+	
+# test json path online
+# http://www.jsonquerytool.com/
 
+@FileProc_Kafka_produce
+Scenario: Able to produce and consume kafka - prmlinux02 - messages
+  Given I have Random expressions
+  When I send it to kafka prmlinux02.cloudapp.net:9092 server to TestMessage topic
+  Then I should consume it in 10 seconds
+# TestMessage
 
-#@FileProc_Kafka_prmlinux02
-#Scenario: Able to produce and consume kafka - prmlinux02 - messages
-#  Given I have Random expressions
-#  When I send it to kafka prmlinux02.cloudapp.net:9092 server to TestMessage topic
-#  Then I should consume it in 10 seconds
-## TestMessage
+@FileProc_Kafka_produce
+Scenario: Able to produce and consume kafka - 172.26.11.135 - messages
+  Given I have Random expressions
+  When I send it to kafka 172.26.11.135:9092 server to TestMessage topic
+  Then I should consume it in 10 seconds
 
-#@FileProc_Kafka
-#Scenario: Able to produce and consume kafka - 172.26.11.135 - messages
-#  Given I have Random expressions
-#  When I send it to kafka 172.26.11.135:9092 server to TestMessage topic
-#  Then I should consume it in 10 seconds
-
-@FileProc_Kafka
+@FileProc_Kafka_produce
 Scenario: Able to produce and consume kafka - shortfusedev-dn9.westus.cloudapp.azure.com:9092 - messages to Claim topic
   Given I have Random expressions
   When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to Claim topic
@@ -25,7 +27,7 @@ Scenario: Able to produce and consume kafka - shortfusedev-dn9.westus.cloudapp.a
 
 
 
-@FileProc_Kafka
+@FileProc_Kafka_produce
 Scenario: Able to produce and consume kafka - 172.26.8.26 - messages
   Given I have Random expressions
   When I send it to kafka 172.26.8.26:9092 server to TestMessage topic
@@ -33,7 +35,7 @@ Scenario: Able to produce and consume kafka - 172.26.8.26 - messages
 
 
 #fusetest, fusetest2, fusetopic2, test
-@FileProc_Kafka_shortfusedev
+@FileProc_Kafka_produce
 Scenario: Able to produce and consume kafka - shortfusedev - messages to fusetest topic
   Given I have Random expressions
   When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to fusetest topic
@@ -42,18 +44,19 @@ Scenario: Able to produce and consume kafka - shortfusedev - messages to fusetes
 
 
 # from zookeper 172.26.8.13:2181
-@FileProc_Kafka_shortfusedev
+@FileProc_Kafka_consume
 Scenario: Able to consume kafka - shortfusedev
   Given I have kafka brokers 
 	| kafka broker                                     |
 	| shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
-	#| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
-	#| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
-	#| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
+	| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+	| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+	| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
   And I have kafka topics
 	| topic        | info                       |
-	| Coverage | FirstOffset: xx; Items: 3 |
+	| Location | FirstOffset: xx; Items: 3 |
 	#| fusetest | FirstOffset: x; Items: 3 |
+	#| Coverage | FirstOffset: xx; Items: 3 |
 	#| Claim | FirstOffset: x; Items: 3 |
 	#| Immunization | FirstOffset: 129; Items: 3 |
 	#| Condition    | FirstOffset: 258; Items: 7 |
@@ -64,56 +67,24 @@ Scenario: Able to consume kafka - shortfusedev
 	#| AllergyIntolerance  | FirstOffset: 51; Items: 8            |
   When I call kafka server
   Then I should retrieve last 3 messages in 10 seconds
- 
   
-
-# from zookeeper prmlinux02.cloudapp.net:2181
-#@FileProc_Kafka
-#Scenario: Able to consume kafka - prmlinux02 
-#  Given I have kafka brokers 
-#	| kafka broker                 |
-#	| prmlinux02.cloudapp.net:9092 |	 
-#  And I have kafka topics
-#    | topic        | info         |
-#    | Practitioner | 140 messages |
-#    #| Test_Claim   | 55 messages  |
-#    #| TestMessage  | 70 messages  |	
-#    #| Organization | 4 messages  v1 |
-#    #| Claim        | 4 messages  v1 |
-#    #| Coverage     | 2 messages  v1 |
-#    #| Patient      | 2 messages  v1 |
-#	#connot combine 1 and 3???
-#  When I call kafka server
-#  Then I should retrieve last 3 messages in 30 seconds
-
-@FileProc_Kafka
-Scenario: Able to consume kafka - 172.26.11.135 
+	#| kafka broker                 |
+	#| prmlinux02.cloudapp.net:9092 |	 
+	#| 172.26.11.135:9092 |	 
+  
+@FileProc_Kafka_consume
+Scenario: Able to consume kafka - 172.26.8.26-29 
   Given I have kafka brokers 
-	| kafka broker                 |
-	| 172.26.11.135:9092 |	 
+	| kafka broker     |
+	| 172.26.8.26:9092 |
+	| 172.26.8.27:9092 |
+	| 172.26.8.28:9092 |
+	| 172.26.8.29:9092 |	 
   And I have kafka topics
     | topic        | info        |
-    | Practitioner | 10 messages |
-    | Patient      | 4 messages  |
-    #| Test_Claim   | 55 messages  |
-    #| TestMessage  | 70 messages  |	
-    #| Organization | 4 messages  v1 |
-    #| Claim        | 4 messages  v1 |
-    #| Coverage     | 2 messages  v1 |
-    #| Patient      | 2 messages  v1 |
-	#connot combine 1 and 3???
-  When I call kafka server
-  Then I should retrieve last 3 messages in 30 seconds
-
-@FileProc_Kafka
-Scenario: Able to consume kafka - 172.26.8.26 
-  Given I have kafka brokers 
-	| kafka broker                 |
-	| 172.26.8.26:9092 |	 
-  And I have kafka topics
-    | topic        | info        |
-    | Practitioner | 10 messages |
-    | Patient      | 4 messages  |
+     | fusetest      | 4 messages  |
+    #| Practitioner | 10 messages |
+    #| Patient      | 4 messages  |
     #| Test_Claim   | 55 messages  |
     #| TestMessage  | 70 messages  |	
     #| Organization | 4 messages  v1 |
@@ -143,7 +114,7 @@ Scenario: Able to consume kafka - 172.26.8.26
 #    | Test_Claim   | 16 messages |
 #    | TestMessage  | 3 messages  |
 
-  @FileProc_Json
+ @FileProc_Json
   Scenario: Able to parse json message Patient
   Given I have json file  
   When I parse it 
@@ -166,3 +137,9 @@ Scenario: Able to consume kafka - 172.26.8.26
     | category.coding[0].primary               | True     |
     | onset.onsetDateTime.offset               | 0        |
   
+
+ @Xml_validation_XXE
+  Scenario: Able to parse xml message with XmlResolver
+  Given I have xml content 
+  When I load it 
+  Then It should be loaded

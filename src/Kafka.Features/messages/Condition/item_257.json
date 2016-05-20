@@ -1,3 +1,5 @@
+ | category.coding[?(@.code=='ccc')].system | xxx      |
+    | code.coding[0].code                      | V04.81   |
 {
   "identifier": [
     {
