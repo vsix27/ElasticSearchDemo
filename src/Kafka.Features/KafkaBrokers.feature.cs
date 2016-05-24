@@ -323,13 +323,22 @@ this.ScenarioSetup(scenarioInfo);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse xml message with XmlResolver", new string[] {
                         "Xml_validation_XXE"});
 #line 142
-  this.ScenarioSetup(scenarioInfo);
+this.ScenarioSetup(scenarioInfo);
 #line 143
-  testRunner.Given("I have xml content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+testRunner.Given("I have xml content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 144
-  testRunner.When("I load it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+testRunner.When("I load it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 145
-  testRunner.Then("It should be loaded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("It should be loaded as xmldoc.Load(xmlreader) loaded with DtdProcessing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 146
+ testRunner.And("It should be loaded as xmldoc.Load(string) with CustomUrlResovler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 147
+ testRunner.And("It should be loaded as xdocument.Load(xmlreader) with DtdProcessing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 148
+ testRunner.And("It should be deserialized as xmlSerializer.Deserialize(xmlreader) with DtdProcess" +
+                    "ing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 149
+ testRunner.And("xml file should be cleaned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }

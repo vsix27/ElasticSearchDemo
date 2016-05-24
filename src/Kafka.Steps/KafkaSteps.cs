@@ -14,6 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using TechTalk.SpecFlow;
 
 namespace Kafka.Steps
@@ -460,21 +462,67 @@ namespace Kafka.Steps
         [When(@"I load it")]
         public void When_I_parse_it()
         {
-        }
-
-        [Then(@"It should be loaded")]
-        public void Then_It_should_be_loaded()
-        {
-            #region prepare test xml file
-            string xml = "<?xml version='1.0'?><Base><Person>me</Person>" +
-                $"<Time>{DateTime.Now.ToString()}</Time>" +
-                "<Person>you</Person></Base>";
             string exmlContent = Path.GetTempFileName();
+
+            // Create C# from xml - copy xml, in vs menu select Edit/Paste special/xml as classes
+            // https://dennymichael.net/2014/05/30/convert-xml-to-csharp-classes/comment-page-1/
+            string xml = "<?xml version='1.0'?><Base><Person>me</Person><Person>you</Person>" +
+                $"<Time>{DateTime.Now.ToString()}</Time>" +
+                "</Base>";
             File.Delete(exmlContent);
             exmlContent += ".xml";
             File.WriteAllText(exmlContent, xml);
             Console.WriteLine("expected:\n\t" + File.ReadAllText(exmlContent));
-            #endregion
+
+            ScenarioContext.Current["exmlContent"] = exmlContent;
+            ScenarioContext.Current["xml"] = xml;
+        }
+
+        /// <summary>
+        /// get stream - leave it open for reading
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public Stream GenerateStreamFromString(string s)
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8, 512, true))
+            {
+                writer.Write(s);
+                writer.Flush();
+                stream.Position = 0;
+            }
+            return stream;
+        }
+
+        public static XDocument LoadXDocument(Stream exmlContent)
+        {
+            var settings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit }; // { XmlResolver = new CustomUrlResovler() };
+            var reader = XmlReader.Create(exmlContent, settings);
+            XDocument exmlXDocument = XDocument.Load(reader);
+
+            if (exmlXDocument == null)
+                //todo log error
+                throw new NotSupportedException("Could not load eXML file content");
+
+            exmlContent.Position = 0;
+            return exmlXDocument;
+        }
+
+        [Then(@"It should be loaded as xmldoc.Load\(string\) with CustomUrlResovler")]
+        public void Then_It_should_be_loaded_with_CustomUrlResovler()
+        {
+            string exmlContent = ScenarioContext.Current["exmlContent"].ToString(); // file path 
+            string xml = ScenarioContext.Current["xml"].ToString(); // file content       
+
+            var stream = GenerateStreamFromString(xml);
+            string streamValue = null;
+            using (var reader = new StreamReader(stream))
+            {
+                streamValue = reader.ReadToEnd();
+            }
+
+            Console.WriteLine("expected stream:\n\t" + streamValue);
 
             XmlDocument xmlDocumentClaims = new XmlDocument() { XmlResolver = new CustomUrlResovler() };
             try
@@ -483,11 +531,11 @@ namespace Kafka.Steps
             }
             catch (XmlException xmlE)
             {
-                Console.WriteLine("Load stream into XML document failed with error: " + xmlE.Message);
+                Console.WriteLine("Load stream 1 into XML document failed with error: " + xmlE.Message);
                 throw xmlE;
             }
 
-            Console.WriteLine("loaded file:\n" + xmlDocumentClaims.OuterXml);
+            Console.WriteLine("loaded file with CustomUrlResovler:\n" + xmlDocumentClaims.OuterXml);
 
             try
             {
@@ -496,13 +544,123 @@ namespace Kafka.Steps
                 var reader = XmlReader.Create(mStrm, settings);
                 XDocument exmlXDocument = XDocument.Load(reader);
                 Console.WriteLine("loaded stream:\n" + exmlXDocument.ToString());
+                mStrm.Dispose();
+                reader.Dispose();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Load stream into XML document failed with error: " + ex.Message);                 
+                Console.WriteLine("Load stream into XML document failed with error: " + ex.Message);
             }
         }
 
+        [Then(@"It should be loaded as xmldoc.Load\(xmlreader\) loaded with DtdProcessing.Prohibit")]
+        public void Then_It_should_be_loaded_with_DtdProcessing_Prohibit()
+        {
+            string exmlContent = ScenarioContext.Current["exmlContent"].ToString(); // file path 
+            string xml = ScenarioContext.Current["xml"].ToString(); // file content       
+
+            var stream = GenerateStreamFromString(xml);
+
+            // do not read strem - it will be closed after ReadToEnd 
+            //string streamValue = null;
+            //using (var reader = new StreamReader(stream)) { streamValue = reader.ReadToEnd(); }
+            //Console.WriteLine("expected stream:\n\t" + streamValue);
+
+            var xmlDocumentClaims = new XmlDocument();
+            try
+            {
+                XmlReaderSettings settings = new XmlReaderSettings() { DtdProcessing = DtdProcessing.Prohibit };
+                XmlReader reader = XmlReader.Create(stream, settings);
+                xmlDocumentClaims.Load(reader);
+            }
+            catch (XmlException xmlE)
+            {
+                Console.WriteLine("Load stream 2 into XML document failed with error: " + xmlE.Message);
+                throw xmlE;
+            }
+
+            Console.WriteLine("loaded file with DtdProcessing.Prohibit:\n" + xmlDocumentClaims.OuterXml);
+            try
+            {
+                MemoryStream mStrm = new MemoryStream(Encoding.UTF8.GetBytes(xml));
+                var settings = new XmlReaderSettings { XmlResolver = new CustomUrlResovler() };
+                var reader = XmlReader.Create(mStrm, settings);
+                XDocument exmlXDocument = XDocument.Load(reader);
+                Console.WriteLine("loaded stream:\n" + exmlXDocument.ToString());
+                mStrm.Dispose();
+                reader.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Load stream into XML document failed with error: " + ex.Message);
+            }
+        }
+
+        public static bool ValidateExml(XDocument exmlXDocument) { return true; }
+
+        [Then(@"It should be deserialized as xmlSerializer.Deserialize\(xmlreader\) with DtdProcessing.Prohibit")]
+        public void Then_It_should_be_deserialized_as_xmlSerializer_Deserialize_xmlreader_with_DtdProcessing_Prohibit()
+        {
+            string xml = ScenarioContext.Current["xml"].ToString(); // file content    
+            var stream = GenerateStreamFromString(xml);
+            XDocument exmlDocument = LoadXDocument(stream);
+
+            Base claimCore = null;
+            try
+            {
+                if (ValidateExml(exmlDocument))
+                {
+                    var xmlSerializer = new XmlSerializer(typeof(Base));
+
+                    XmlReaderSettings settings = new XmlReaderSettings() { DtdProcessing = DtdProcessing.Prohibit };
+                    XmlReader reader = XmlReader.Create(stream, settings);
+                    claimCore = (Base)xmlSerializer.Deserialize(reader);
+                    Assert.IsNotNull(claimCore);
+                    Assert.IsTrue(claimCore.Person.Contains("me"));
+                    Assert.IsTrue(claimCore.Person.Contains("you"));
+                }
+            }
+            catch (XmlSchemaException e)
+            {
+                //todo log error
+                Console.WriteLine("Deserialziation failed with error: " + e.Message);
+                throw;
+            }
+        }
+
+        [Then(@"It should be loaded as xdocument.Load\(xmlreader\) with DtdProcessing.Prohibit")]
+        public void Then_It_should_be_loaded_as_xdocument_Load_xmlreader_with_DtdProcessing_Prohibit()
+        {
+            string xml = ScenarioContext.Current["xml"].ToString(); // file content    
+            var stream = GenerateStreamFromString(xml);
+
+            try
+            {
+                XmlReaderSettings settings = new XmlReaderSettings() { DtdProcessing = DtdProcessing.Prohibit };
+                XmlReader reader = XmlReader.Create(stream, settings);
+                XDocument exmlXDocument = XDocument.Load(reader);
+
+                Assert.IsNotNull(exmlXDocument);
+                Assert.IsTrue(exmlXDocument.ToString().Contains("you"));
+                Assert.IsTrue(((XElement)exmlXDocument.FirstNode).Name.LocalName == "Base");
+            }
+            catch (XmlSchemaException e)
+            {
+                //todo log error
+                Console.WriteLine("Deserialziation failed with error: " + e.Message);
+                throw;
+            }
+        }
+
+
+        [Then(@"xml file should be cleaned")]
+        public void Then_xml_file_should_be_cleaned()
+        {
+            string exmlContent = ScenarioContext.Current["exmlContent"].ToString(); // file path 
+            File.Delete(exmlContent);
+        }
+
+        //
         [Then(@"I should be find in file (.*) matching json values")]
         public void Then_I_should_be_find_in_file_P0_matching_json_values(string p0, Table table)
         {

@@ -139,7 +139,12 @@ Scenario: Able to consume kafka - 172.26.8.26-29
   
 
  @Xml_validation_XXE
-  Scenario: Able to parse xml message with XmlResolver
-  Given I have xml content 
-  When I load it 
-  Then It should be loaded
+Scenario: Able to parse xml message with XmlResolver
+Given I have xml content 
+When I load it 
+Then It should be loaded as xmldoc.Load(xmlreader) loaded with DtdProcessing.Prohibit
+ And It should be loaded as xmldoc.Load(string) with CustomUrlResovler
+ And It should be loaded as xdocument.Load(xmlreader) with DtdProcessing.Prohibit
+ And It should be deserialized as xmlSerializer.Deserialize(xmlreader) with DtdProcessing.Prohibit
+ And xml file should be cleaned
+  

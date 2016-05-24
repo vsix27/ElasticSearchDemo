@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClaimCore.cs" />
     <Compile Include="CustomUrlResovler.cs" />
     <Compile Include="ResourceType.cs" />
     <Compile Include="KafkaSteps.cs" />
