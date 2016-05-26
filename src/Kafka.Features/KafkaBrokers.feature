@@ -53,18 +53,21 @@ Scenario: Able to consume kafka - shortfusedev
 	| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
 	| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
   And I have kafka topics
-	| topic        | info                       |
-	| Location | FirstOffset: xx; Items: 3 |
-	#| fusetest | FirstOffset: x; Items: 3 |
-	#| Coverage | FirstOffset: xx; Items: 3 |
-	#| Claim | FirstOffset: x; Items: 3 |
-	#| Immunization | FirstOffset: 129; Items: 3 |
-	#| Condition    | FirstOffset: 258; Items: 7 |
-	#| DiagnosticReport    | FirstOffset: 61; Items: 2 (53, 10)   |
-	#| Patient             | FirstOffset: 217; Items: 3 (198, 22) |
-	#| FamilyMemberHistory | FirstOffset: 16; Items: 2            |
-	#| Medication          | FirstOffset: 396; Items: 4           |
-	#| AllergyIntolerance  | FirstOffset: 51; Items: 8            |
+	| topic               | info                               |
+	| Practitioner        | 10 messages                        |
+	| Patient             | 4 messages                         |
+	| Procedure           | 4 messages                         |
+	| Organization        | 4 messages  v1                     |
+	| Claim               | 4 messages  v1                     |
+	| Coverage            | 2 messages  v1                     |
+	| Location            | 2 messages  v1                     |
+	| Condition           | FirstOffset: 258; Items: 7         |
+	| DiagnosticReport    | FirstOffset: 61; Items: 2 (53, 10) |
+	| Encounter           | 2 messages  v1                     |
+	| FamilyMemberHistory | FirstOffset: 16; Items: 2          |
+	| Immunization        | FirstOffset: 129; Items: 3         |
+	| Medication          | FirstOffset: 396; Items: 4         |
+	| AllergyIntolerance  | FirstOffset: 51; Items: 8          |
   When I call kafka server
   Then I should retrieve last 3 messages in 10 seconds
   
@@ -81,19 +84,20 @@ Scenario: Able to consume kafka - 172.26.8.26-29
 	| 172.26.8.28:9092 |
 	| 172.26.8.29:9092 |	 
   And I have kafka topics
-    | topic        | info        |
-     | fusetest      | 4 messages  |
-    #| Practitioner | 10 messages |
-    #| Patient      | 4 messages  |
+    | topic        | info           |
+    | fusetest     | 4 messages     |
+    | Practitioner | 10 messages    |
+    | Patient      | 4 messages     |
+    | Procedure    | 4 messages     |
+    | Organization | 4 messages  v1 |
+    | Claim        | 4 messages  v1 |
+    | Coverage     | 2 messages  v1 |
+    | Location     | 2 messages  v1 |
     #| Test_Claim   | 55 messages  |
     #| TestMessage  | 70 messages  |	
-    #| Organization | 4 messages  v1 |
-    #| Claim        | 4 messages  v1 |
-    #| Coverage     | 2 messages  v1 |
-    #| Patient      | 2 messages  v1 |
 	#connot combine 1 and 3???
   When I call kafka server
-  Then I should retrieve last 3 messages in 30 seconds
+  Then I should retrieve last 3 messages in 10 seconds
 
 
 #@FileProc_Kafka

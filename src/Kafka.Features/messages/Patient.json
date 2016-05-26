@@ -1,1 +1,45 @@
-{"name":[{"use":"Official","text":"DJ DIMPSON","family":["DIMPSON"],"given":["DJ"]}],"gender":"Male","birthDate":{"value":614544192000000000},"address":[{"use":"Home","addressLine":["32 BUFFALO RUN"],"city":"ROCKING HORSE","region":"CA","postalCode":"99666"}],"contact":[{"name":{"text":"DJ DIMPSON","family":["DIMPSON"],"given":["DJ"]},"telecom":[{"system":"Phone","value":"8157665902","use":"Home"}],"address":{"use":"Home","addressLine":["32 BUFFALO RUN"],"city":"ROCKING HORSE","region":"CA","postalCode":"99666"}}],"active":true}
+{
+  "name": [
+    {
+      "use": "Official",
+      "text": "DJ DIMPSON",
+      "family": [ "DIMPSON" ],
+      "given": [ "DJ" ]
+    }
+  ],
+  "gender": "Male",
+  "birthDate": { "value": 614544192000000000 },
+  "address": [
+    {
+      "use": "Home",
+      "addressLine": [ "32 BUFFALO RUN" ],
+      "city": "ROCKING HORSE",
+      "region": "CA",
+      "postalCode": "99666"
+    }
+  ],
+  "contact": [
+    {
+      "name": {
+        "text": "DJ DIMPSON",
+        "family": [ "DIMPSON" ],
+        "given": [ "DJ" ]
+      },
+      "telecom": [
+        {
+          "system": "Phone",
+          "value": "8157665902",
+          "use": "Home"
+        }
+      ],
+      "address": {
+        "use": "Home",
+        "addressLine": [ "32 BUFFALO RUN" ],
+        "city": "ROCKING HORSE",
+        "region": "CA",
+        "postalCode": "99666"
+      }
+    }
+  ],
+  "active": true
+}

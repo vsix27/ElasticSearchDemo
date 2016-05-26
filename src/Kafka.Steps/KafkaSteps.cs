@@ -119,7 +119,7 @@ namespace Kafka.Steps
             //v1
             //var dict = ConsumeMessagesTaskRun(topic, options, seconds, offsetPosition);
             //var dict = ConsumeMessagesTaskRun(topic, options, 0, offsetPosition);
-            var dict = ConsumeMessages(topic, options, seconds, offsetPosition);
+            var dict = ConsumeMessages(topic, options, offsetPosition, seconds);
             //var dict4 = ConsumeMessages(topic, options, 0, offsetPosition);
             Console.WriteLine($" ==================  Expect messages End   ==================");
 
@@ -172,6 +172,21 @@ namespace Kafka.Steps
             return list;
         }
 
+        private static string _projTmp = null;
+        private static string ProjTmp
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_projTmp))
+                {
+                    _projTmp = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
+                    if (!Directory.Exists(_projTmp)) Directory.CreateDirectory(_projTmp);
+                    Console.WriteLine("messages will be saved in directory " + _projTmp);
+                }
+                return _projTmp;
+            }
+        }
+
         /// <summary>
         /// returns dictionary with kvp: key - offset, value - json
         /// </summary>
@@ -180,7 +195,7 @@ namespace Kafka.Steps
         /// <param name="delay"></param>
         /// <param name="offsetPosition"></param>
         /// <returns></returns>
-        private Dictionary<long, string> ConsumeMessages(string topic, KafkaOptions options, int delay, OffsetPosition offsetPosition)
+        public static Dictionary<long, string> ConsumeMessages(string topic, KafkaOptions options, OffsetPosition offsetPosition, int delay = 5)
         {
             var list = new Dictionary<long, string>();
             int k = 0;
@@ -196,6 +211,9 @@ namespace Kafka.Steps
                     var key = data.Key.ToUtf8String();
                     list.Add(data.Meta.Offset, message);
                     Console.WriteLine($"{k++} {DateTime.Now.ToString()} [{topic}] PartitionId {data.Meta.PartitionId}, Offset {data.Meta.Offset}, key: {key}, message {message}");
+                    string jfile = $"{topic}-{data.Meta.PartitionId}-{data.Meta.Offset}-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json";
+                    jfile = Path.Combine(ProjTmp, jfile);
+                    File.WriteAllText(jfile, message);
                 }
             }
             catch (Exception ex) { Console.WriteLine($" -----------  topic:{topic}. {ex.Message}"); }
@@ -407,7 +425,7 @@ namespace Kafka.Steps
 
                     // v3 no results:
                     Console.WriteLine($" ---- start 3 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
-                    ConsumeMessages(topic, options, seconds, offsetPosition);
+                    ConsumeMessages(topic, options, offsetPosition, seconds);
 
                     //v4
                     //Console.WriteLine($" ---- start 4 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
@@ -613,6 +631,9 @@ namespace Kafka.Steps
                     var xmlSerializer = new XmlSerializer(typeof(Base));
 
                     XmlReaderSettings settings = new XmlReaderSettings() { DtdProcessing = DtdProcessing.Prohibit };
+                    // read from xml string: XmlReader reader = XmlReader.Create(new StringReader(claimExml), settings);
+                    // read from file:       XmlReader reader = XmlReader.Create(claimExml, settings);
+
                     XmlReader reader = XmlReader.Create(stream, settings);
                     claimCore = (Base)xmlSerializer.Deserialize(reader);
                     Assert.IsNotNull(claimCore);
@@ -632,13 +653,22 @@ namespace Kafka.Steps
         public void Then_It_should_be_loaded_as_xdocument_Load_xmlreader_with_DtdProcessing_Prohibit()
         {
             string xml = ScenarioContext.Current["xml"].ToString(); // file content    
-            var stream = GenerateStreamFromString(xml);
+            var exmlContent = GenerateStreamFromString(xml);
 
             try
             {
                 XmlReaderSettings settings = new XmlReaderSettings() { DtdProcessing = DtdProcessing.Prohibit };
-                XmlReader reader = XmlReader.Create(stream, settings);
+                //XmlReader reader = XmlReader.Create(stream, settings); //does not prevent XXE attack
+                
+                string value = null;
+                using (var strreader = new StreamReader(exmlContent, Encoding.UTF8,false, 512, true))
+                {
+                    value = strreader.ReadToEnd();
+                }
+                XmlReader reader = XmlReader.Create(new StringReader(value), settings);
                 XDocument exmlXDocument = XDocument.Load(reader);
+                // check - need to leave stream opened
+                exmlContent.Position = 0;
 
                 Assert.IsNotNull(exmlXDocument);
                 Assert.IsTrue(exmlXDocument.ToString().Contains("you"));

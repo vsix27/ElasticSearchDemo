@@ -191,13 +191,52 @@ this.ScenarioSetup(scenarioInfo);
                         "topic",
                         "info"});
             table2.AddRow(new string[] {
+                        "Practitioner",
+                        "10 messages"});
+            table2.AddRow(new string[] {
+                        "Patient",
+                        "4 messages"});
+            table2.AddRow(new string[] {
+                        "Procedure",
+                        "4 messages"});
+            table2.AddRow(new string[] {
+                        "Organization",
+                        "4 messages  v1"});
+            table2.AddRow(new string[] {
+                        "Claim",
+                        "4 messages  v1"});
+            table2.AddRow(new string[] {
+                        "Coverage",
+                        "2 messages  v1"});
+            table2.AddRow(new string[] {
                         "Location",
-                        "FirstOffset: xx; Items: 3"});
+                        "2 messages  v1"});
+            table2.AddRow(new string[] {
+                        "Condition",
+                        "FirstOffset: 258; Items: 7"});
+            table2.AddRow(new string[] {
+                        "DiagnosticReport",
+                        "FirstOffset: 61; Items: 2 (53, 10)"});
+            table2.AddRow(new string[] {
+                        "Encounter",
+                        "2 messages  v1"});
+            table2.AddRow(new string[] {
+                        "FamilyMemberHistory",
+                        "FirstOffset: 16; Items: 2"});
+            table2.AddRow(new string[] {
+                        "Immunization",
+                        "FirstOffset: 129; Items: 3"});
+            table2.AddRow(new string[] {
+                        "Medication",
+                        "FirstOffset: 396; Items: 4"});
+            table2.AddRow(new string[] {
+                        "AllergyIntolerance",
+                        "FirstOffset: 51; Items: 8"});
 #line 55
   testRunner.And("I have kafka topics", ((string)(null)), table2, "And ");
-#line 68
+#line 71
   testRunner.When("I call kafka server", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 69
+#line 72
   testRunner.Then("I should retrieve last 3 messages in 10 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -210,7 +249,7 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to consume kafka - 172.26.8.26-29", new string[] {
                         "FileProc_Kafka_consume"});
-#line 76
+#line 79
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -223,7 +262,7 @@ this.ScenarioSetup(scenarioInfo);
                         "172.26.8.28:9092"});
             table3.AddRow(new string[] {
                         "172.26.8.29:9092"});
-#line 77
+#line 80
   testRunner.Given("I have kafka brokers", ((string)(null)), table3, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -232,12 +271,33 @@ this.ScenarioSetup(scenarioInfo);
             table4.AddRow(new string[] {
                         "fusetest",
                         "4 messages"});
-#line 83
+            table4.AddRow(new string[] {
+                        "Practitioner",
+                        "10 messages"});
+            table4.AddRow(new string[] {
+                        "Patient",
+                        "4 messages"});
+            table4.AddRow(new string[] {
+                        "Procedure",
+                        "4 messages"});
+            table4.AddRow(new string[] {
+                        "Organization",
+                        "4 messages  v1"});
+            table4.AddRow(new string[] {
+                        "Claim",
+                        "4 messages  v1"});
+            table4.AddRow(new string[] {
+                        "Coverage",
+                        "2 messages  v1"});
+            table4.AddRow(new string[] {
+                        "Location",
+                        "2 messages  v1"});
+#line 86
   testRunner.And("I have kafka topics", ((string)(null)), table4, "And ");
-#line 95
+#line 99
   testRunner.When("I call kafka server", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 96
-  testRunner.Then("I should retrieve last 3 messages in 30 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 100
+  testRunner.Then("I should retrieve last 3 messages in 10 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -249,11 +309,11 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse json message Patient", new string[] {
                         "FileProc_Json"});
-#line 118
+#line 122
   this.ScenarioSetup(scenarioInfo);
-#line 119
+#line 123
   testRunner.Given("I have json file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 120
+#line 124
   testRunner.When("I parse it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -271,7 +331,7 @@ this.ScenarioSetup(scenarioInfo);
             table5.AddRow(new string[] {
                         "address[0].addressLine[2]",
                         "null"});
-#line 121
+#line 125
   testRunner.Then("I should be find in file <messages\\Patient\\item_215.json> matching json values", ((string)(null)), table5, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -284,11 +344,11 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse json message Condition", new string[] {
                         "FileProc_Json"});
-#line 129
+#line 133
   this.ScenarioSetup(scenarioInfo);
-#line 130
+#line 134
   testRunner.Given("I have json file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 131
+#line 135
   testRunner.When("I parse it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -309,7 +369,7 @@ this.ScenarioSetup(scenarioInfo);
             table6.AddRow(new string[] {
                         "onset.onsetDateTime.offset",
                         "0"});
-#line 132
+#line 136
   testRunner.Then("I should be find in file <messages\\Condition\\item_257.json> matching json values", ((string)(null)), table6, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -322,22 +382,22 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse xml message with XmlResolver", new string[] {
                         "Xml_validation_XXE"});
-#line 142
-this.ScenarioSetup(scenarioInfo);
-#line 143
-testRunner.Given("I have xml content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 144
-testRunner.When("I load it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 145
-testRunner.Then("It should be loaded as xmldoc.Load(xmlreader) loaded with DtdProcessing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 146
- testRunner.And("It should be loaded as xmldoc.Load(string) with CustomUrlResovler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+this.ScenarioSetup(scenarioInfo);
 #line 147
- testRunner.And("It should be loaded as xdocument.Load(xmlreader) with DtdProcessing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+testRunner.Given("I have xml content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 148
+testRunner.When("I load it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 149
+testRunner.Then("It should be loaded as xmldoc.Load(xmlreader) loaded with DtdProcessing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 150
+ testRunner.And("It should be loaded as xmldoc.Load(string) with CustomUrlResovler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 151
+ testRunner.And("It should be loaded as xdocument.Load(xmlreader) with DtdProcessing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 152
  testRunner.And("It should be deserialized as xmlSerializer.Deserialize(xmlreader) with DtdProcess" +
                     "ing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 149
+#line 153
  testRunner.And("xml file should be cleaned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
