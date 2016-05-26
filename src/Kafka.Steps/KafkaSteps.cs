@@ -49,11 +49,12 @@ namespace Kafka.Steps
         public void When_I_send_it_to_kafka(string kafkaServer, string topic)
         {
             ScenarioContext.Current["kafkaTopic"] = topic;
-            ScenarioContext.Current["kafkaServer"] = kafkaServer;
 
-            Console.WriteLine($" ==================  kafkaServer {kafkaServer}; topic {topic} ==================");
+            var brokers = ScenarioContext.Current["kafkaBrokers"] as List<string>;
+            Assert.IsNotNull(brokers);          
 
-            var options = new KafkaOptions(new Uri("http://" + kafkaServer));
+            var options = GetKafkaOptions(brokers);
+
             //create a producer to send messages with
             var producer = new Producer(new BrokerRouter(options))
             {
@@ -62,7 +63,8 @@ namespace Kafka.Steps
             };
 
             // get offset:
-            var to = new TopicOffset(producer.GetTopicOffsetAsync(topic).Result);
+            var to = GetProducerTopicOffset(options, topic, 0);
+
             ScenarioContext.Current["kafkaOffsetBeforeProduce"] = to;
 
             var kafkaMessages = ScenarioContext.Current["kafkaMessages"] as List<Message>;
@@ -71,23 +73,16 @@ namespace Kafka.Steps
 
             // send messages                      
             var response = SendRandomBatch(producer, topic, kafkaMessages).Result;
-
-            //Console.WriteLine($"Completed send of batch: producer Buffered: {producer.BufferCount}; AsyncCount: {producer.AsyncCount};");
-            //foreach (var result in response.OrderBy(x => x.PartitionId))
-            //    Console.WriteLine($"Topic: {result.Topic}; PartitionId: {result.PartitionId}; Offset: {result.Offset}");
-
+    
             // Tuple with string - first message json, list of messages
             ScenarioContext.Current["kafkaResult"] = Tuple.Create(kafkaMessages[0].Value.ToUtf8String(), response.ToList());
 
-            using (producer)
-            {
-            }
+            response = null;
+            producer.Dispose();          
         }
 
         private static async Task<ProduceResponse[]> SendRandomBatch(Producer producer, string topic, List<Message> messages)
         {
-            //Console.WriteLine(" ==================  SendRandomBatch Start ==================");
-
             var sendTask = producer.SendMessageAsync(topic, messages);
             Console.WriteLine("Posted #{0} messages.  Buffered:{1} AsyncCount:{2}", messages.Count, producer.BufferCount, producer.AsyncCount);
             var response = await sendTask;
@@ -104,11 +99,12 @@ namespace Kafka.Steps
         public void Then_I_should_consume_it_in_P0_seconds(int seconds)
         {
             string topic = ScenarioContext.Current["kafkaTopic"].ToString();
-            var options = new KafkaOptions(new Uri("http://" + ScenarioContext.Current["kafkaServer"]));
-
+            var brokers = ScenarioContext.Current["kafkaBrokers"] as List<string>;
+           
+            var options = GetKafkaOptions (brokers);
 
             var to = (TopicOffset)ScenarioContext.Current["kafkaOffsetBeforeProduce"];
-            if (to.Topic == null) to = GetProducerTopicOffset(options, topic, 5);
+            if (to.Topic == null) to = GetProducerTopicOffset(options, topic, seconds);
             OffsetPosition offsetPosition = new OffsetPosition() { Offset = to.FirstOffset + to.Items, PartitionId = to.PartitionId };
 
             var kafkaMessages = ScenarioContext.Current["kafkaMessages"] as List<Message>;
@@ -203,6 +199,7 @@ namespace Kafka.Steps
 
             try
             {
+                var to = GetProducerTopicOffset(options, topic, delay);
                 var messages = (delay < 1) ? consumer.Consume(null) : consumer.Consume(new CancellationTokenSource(delay * 1000).Token);
 
                 foreach (var data in messages)
@@ -214,6 +211,9 @@ namespace Kafka.Steps
                     string jfile = $"{topic}-{data.Meta.PartitionId}-{data.Meta.Offset}-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json";
                     jfile = Path.Combine(ProjTmp, jfile);
                     File.WriteAllText(jfile, message);
+
+                    if (data.Meta.Offset == to.FirstOffset + to.Items-1)
+                        break;
                 }
             }
             catch (Exception ex) { Console.WriteLine($" -----------  topic:{topic}. {ex.Message}"); }
@@ -225,7 +225,7 @@ namespace Kafka.Steps
         }
 
 
-        [Given(@"I have kafka brokers")]
+        [Given(@"I have brokers for kafka")]
         public void Given_I_have_kafka_brokers(Table table)
         {
             TableToContextList("kafkaBrokers", table);
@@ -237,7 +237,15 @@ namespace Kafka.Steps
             // placeholder
         }
 
-        [Given(@"I have kafka topics")]
+        [Then(@"data folder is created if missing")]
+        public void Then_data_folder_is_created_if_missing()
+        {
+            Assert.IsNotNull(ProjTmp);
+            Assert.IsTrue(Directory.Exists(ProjTmp));
+            Console.WriteLine("file://" + ProjTmp.Replace("\\", "/"));
+        }
+
+        [Given(@"I have topics for kafka")]
         public void Given_I_have_kafka_topics(Table table)
         {
             TableToContextList("kafkaTopics", table);
@@ -248,6 +256,7 @@ namespace Kafka.Steps
         {
             ScenarioContext.Current["kafkaTopic"] = topic;
         }
+
 
         public void TableToContextList(string curContextName, Table table)
         {
@@ -343,7 +352,7 @@ namespace Kafka.Steps
             }
         }
 
-        private TopicOffset GetProducerTopicOffset(KafkaOptions options, string topic, int seconds)
+        private static TopicOffset GetProducerTopicOffset(KafkaOptions options, string topic, int seconds)
         {
             var to = new TopicOffset();
             try
@@ -379,6 +388,14 @@ namespace Kafka.Steps
 
          */
 
+        private KafkaOptions GetKafkaOptions(List<string> brokers)
+        {
+            var options = new KafkaOptions();
+            foreach (string broker in brokers)
+                options.KafkaServerUri.Add(new Uri("http://" + broker));
+            return options;
+        }
+
         [Then(@"I should retrieve last (.*) messages in (.*) seconds")]
         public void Then_I_should_retrieve_it_in_P0_seconds(int lastMessages, int seconds)
         {
@@ -387,14 +404,15 @@ namespace Kafka.Steps
             var brokers = ScenarioContext.Current["kafkaBrokers"] as List<string>;
             Assert.IsNotNull(brokers);
 
-            var topics = ScenarioContext.Current["kafkaTopics"] as List<string>;
-            if (topics == null && ScenarioContext.Current["kafkaTopic"] != null)
+            List<string> topics = null;
+            if (ScenarioContext.Current.ContainsKey("kafkaTopics"))
+                topics = ScenarioContext.Current["kafkaTopics"] as List<string>;
+            else if (ScenarioContext.Current.ContainsKey("kafkaTopic"))
                 topics = new List<string> { ScenarioContext.Current["kafkaTopic"].ToString() };
+
             Assert.IsNotNull(topics);
 
-            var options = new KafkaOptions();
-            foreach (string broker in brokers)
-                options.KafkaServerUri.Add(new Uri("http://" + broker));
+            var options = GetKafkaOptions(brokers);           
 
             int topicCount = 0;
             foreach (string topic in topics)
@@ -415,27 +433,31 @@ namespace Kafka.Steps
 
                     OffsetPosition offsetPosition = new OffsetPosition() { Offset = foffs, PartitionId = to.PartitionId };
 
+                    #region v1, v2
                     //v1
                     //Console.WriteLine($" ---- start 1 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
-                    //ConsumeMessagesTaskRun(topic, options, seconds, offsetPosition);
+                    //ConsumeMessagesTaskRun(topic, options, offsetPosition, seconds);
 
                     //v2 no results:
                     //Console.WriteLine($" ---- start 2 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
-                    //ConsumeMessagesTaskRun(topic, options, 0, offsetPosition);
+                    //ConsumeMessagesTaskRun(topic, options, offsetPosition, 0);
+                    #endregion
 
                     // v3 no results:
                     Console.WriteLine($" ---- start 3 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
                     ConsumeMessages(topic, options, offsetPosition, seconds);
 
-                    //v4
+                    #region v4, v5
+                    //v1
                     //Console.WriteLine($" ---- start 4 ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
-                    //ConsumeMessages(topic, options, 0, offsetPosition);
+                    //ConsumeMessages(topic, options, offsetPosition, 0);
 
                     //v5
                     //var cancellationToken = new CancellationTokenSource(seconds * 1000);
                     //Task.Factory.StartNew(() => ConsumeMessages(topic, options, 0, offsetPosition), cancellationToken.Token);
                     //Thread.Sleep(5000); //simulate some other work
                     //cancellationToken.Cancel(false); //this stops the Task??  false indicates that no exceptions will be thrown.
+                    #endregion
 
                     Console.WriteLine($" ---- end ------- {DateTime.Now.ToString()}  topic:{topic}. {topicCount} of {topics.Count}");
                     continue;
@@ -443,6 +465,7 @@ namespace Kafka.Steps
                 }
                 catch (Exception ex) { Console.WriteLine($" -----------  topic:{topic}. {ex.Message}"); }
             }
+            Console.WriteLine("file://" + ProjTmp.Replace("\\", "/"));
         }
 
         // bad
@@ -659,9 +682,9 @@ namespace Kafka.Steps
             {
                 XmlReaderSettings settings = new XmlReaderSettings() { DtdProcessing = DtdProcessing.Prohibit };
                 //XmlReader reader = XmlReader.Create(stream, settings); //does not prevent XXE attack
-                
+
                 string value = null;
-                using (var strreader = new StreamReader(exmlContent, Encoding.UTF8,false, 512, true))
+                using (var strreader = new StreamReader(exmlContent, Encoding.UTF8, false, 512, true))
                 {
                     value = strreader.ReadToEnd();
                 }
@@ -690,7 +713,6 @@ namespace Kafka.Steps
             File.Delete(exmlContent);
         }
 
-        //
         [Then(@"I should be find in file (.*) matching json values")]
         public void Then_I_should_be_find_in_file_P0_matching_json_values(string p0, Table table)
         {
@@ -710,6 +732,16 @@ namespace Kafka.Steps
                 Assert.AreEqual(found, jval);
             }
         }
+
+        #region Setup/Teardown
+
+        [BeforeScenario]
+        public void SetupKafka()
+        {
+            // just place holder
+        }
+
+        #endregion
 
     }
 }

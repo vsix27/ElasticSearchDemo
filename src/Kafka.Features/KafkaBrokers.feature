@@ -24,15 +24,28 @@ Scenario: Able to produce and consume kafka - shortfusedev-dn9.westus.cloudapp.a
   Given I have Random expressions
   When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to Claim topic
   Then I should consume it in 10 seconds
-
-
-
+  
 @FileProc_Kafka_produce
-Scenario: Able to produce and consume kafka - 172.26.8.26 - messages
-  Given I have Random expressions
-  When I send it to kafka 172.26.8.26:9092 server to TestMessage topic
-  Then I should consume it in 10 seconds
+Scenario Outline: Able to produce/consume kafka
+  Given I have brokers for kafka  
+	| kafka broker                                     |
+	| shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+	| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+	| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+	| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
+  And I have Random expressions
+  When I send it to kafka 172.26.8.26:9092 server to <topic> topic
+  Then I should consume it in 0 seconds
 
+Examples:
+  | topic        |
+  | fusetest     |
+  | fusetest2    |
+  | TestMessage  |
+  | Practitioner |
+  | Claim        |
+  | Coverage     |
+  | Location     |
 
 #fusetest, fusetest2, fusetopic2, test
 @FileProc_Kafka_produce
@@ -46,14 +59,16 @@ Scenario: Able to produce and consume kafka - shortfusedev - messages to fusetes
 # from zookeper 172.26.8.13:2181
 @FileProc_Kafka_consume
 Scenario: Able to consume kafka - shortfusedev
-  Given I have kafka brokers 
+  Given I have brokers for kafka  
 	| kafka broker                                     |
 	| shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
 	| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
 	| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
 	| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
-  And I have kafka topics
+  And I have topics from kafka 
 	| topic               | info                               |
+	| fusetest            | 4 messages                         |
+	| fusetest2           | 4 messages                         |
 	| Practitioner        | 10 messages                        |
 	| Patient             | 4 messages                         |
 	| Procedure           | 4 messages                         |
@@ -74,18 +89,27 @@ Scenario: Able to consume kafka - shortfusedev
 	#| kafka broker                 |
 	#| prmlinux02.cloudapp.net:9092 |	 
 	#| 172.26.11.135:9092 |	 
-  
+
+@FileProc_Kafka_consume
+Scenario: Able to get data folder
+  Given I have brokers for kafka 
+    | kafka broker     |
+	| 172.26.8.26:9092 |
+  When I call kafka server
+  Then data folder is created if missing
+
 @FileProc_Kafka_consume
 Scenario: Able to consume kafka - 172.26.8.26-29 
-  Given I have kafka brokers 
+  Given I have brokers for kafka 
 	| kafka broker     |
 	| 172.26.8.26:9092 |
 	| 172.26.8.27:9092 |
 	| 172.26.8.28:9092 |
 	| 172.26.8.29:9092 |	 
-  And I have kafka topics
+  And I have topics for kafka
     | topic        | info           |
     | fusetest     | 4 messages     |
+    | fusetest2    | 4 messages     |
     | Practitioner | 10 messages    |
     | Patient      | 4 messages     |
     | Procedure    | 4 messages     |
@@ -99,10 +123,33 @@ Scenario: Able to consume kafka - 172.26.8.26-29
   When I call kafka server
   Then I should retrieve last 3 messages in 10 seconds
 
+@FileProc_Kafka_consume
+Scenario Outline: Able to consume kafka topic
+  Given I have brokers for kafka
+    | kafka broker     |
+	| 172.26.8.26:9092 |
+	| 172.26.8.27:9092 |
+	| 172.26.8.28:9092 |
+	| 172.26.8.29:9092 |	 
+  And I have kafka <topic>    
+  When I call kafka server
+  Then I should retrieve last 2 messages in 0 seconds
+
+Examples:
+    | topic        | info           |
+    | fusetest     | A messages     |
+    | fusetest2    | B messages     |
+    | Practitioner | 10 messages    |
+    | Location     | 2 messages  v1 |
+    #| Patient      | 4 messages     |
+    #| Procedure    | 4 messages     |
+    #| Organization | 4 messages  v1 |
+    #| Claim        | 4 messages  v1 |
+    #| Coverage     | 2 messages  v1 |
 
 #@FileProc_Kafka
 #Scenario Outline: Able to consume kafka prmlinux02.cloudapp.net by topic
-#  Given I have kafka brokers 
+#  Given I have brokers for kafka 
 #	| kafka broker                 |
 #	| prmlinux02.cloudapp.net:9092 |	 
 #  And I have kafka <topic>    
