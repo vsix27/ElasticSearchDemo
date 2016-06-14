@@ -1,0 +1,32 @@
+{
+  "identifier": [
+    {
+      "system": "2.16.840.1.113883.10.20.22.4.12",
+      "value": "1.2.3.4.5.6.7.8",
+      "use": ""
+    }
+  ],
+  "patient": { "reference": "Patient/28e211e8e0669a1fb70c573a8ac27fb3" },
+  "status": "Completed",
+  "type": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.6.96",
+        "code": "274025005",
+        "display": "Colonic polypectomy",
+        "primary": true
+      }
+    ],
+    "text": "Colonic polypectomy"
+  },
+  "performer": [ { "person": { "reference": "Practitioner/94c05604fa91c833631a7aecd9238f2a" } } ],
+  "performed": {
+    "performedDateTime": {
+      "value": 634322880000000000,
+      "offset": 0,
+      "text": "20110203"
+    }
+  },
+  "resourceId": "57bbf529b349cd27daf0ea37473f0a57",
+  "ResourceDocumentPath": "3mqzdxt93ch5p6gbsp35o9oup7jo5qo8jk7waomj5r336xz7cyno/Procedure/5"
+}

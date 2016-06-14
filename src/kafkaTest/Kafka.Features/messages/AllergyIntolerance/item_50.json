@@ -1,0 +1,41 @@
+{	"identifier": [{
+		"system": "2.16.840.1.113883.10.20.22.4.30",
+		"value": "AB10CE7C-5029-4F17-AC02-C96CC35260EE",
+		"use": ""
+	}],
+	"recordedDate": {
+		"value": 634128480000000000,
+		"offset": 0,
+		"text": "20100623"
+	},
+	"substance": {
+		"coding": [{
+			"system": "2.16.840.1.113883.6.88",
+			"code": "852079",
+			"display": "Dandelion Pollen",
+			"primary": true
+		}],
+		"text": "Dandelion Pollen"
+	},
+	"status": "Resolved",
+	"criticality": "Low",
+	"type": "",
+	"category": "Food",
+	"event": [{
+		"certainty": "",
+		"manifestation": [{
+			"text": "Hives"
+		}],
+		"onset": {
+			"value": 634128480000000000,
+			"offset": 0,
+			"text": "20100623"
+		},
+		"severity": "Mild"
+	}],
+	"resourceId": "fc2b74f4c59f997548c8220e392fbdae",
+	"patient": {
+		"reference": "Patient/28e211e8e0669a1fb70c573a8ac27fb3"
+	},
+	"ResourceDocumentPath": "3mqzdxt93ch5p6gbsp35o9oup7jo5qo8jk7waomj5r336xz7cyno/Allergy/4"
+}

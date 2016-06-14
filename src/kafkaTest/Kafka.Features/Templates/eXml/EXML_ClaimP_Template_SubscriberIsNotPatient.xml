@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ClaimCore>
+  <ControlInformation>
+    <Version>00501</Version>
+    <SubmitterID>E00X00000012</SubmitterID>
+    <UserID>E00X</UserID>
+    <PayorID>09102</PayorID>
+    <ClaimType>PRO</ClaimType>
+    <OriginalReferenceNumber>0347</OriginalReferenceNumber>
+    <TestIndicator>N</TestIndicator>
+  </ControlInformation>
+  <Submitter>
+    <PrimaryIdentification>
+      <PrimaryIdentifierID>E00X</PrimaryIdentifierID>
+      <PrimaryIdentificationType>46</PrimaryIdentificationType>
+    </PrimaryIdentification>
+    <Name>
+      <OrganizationName>ACME MEDICAL GROUP</OrganizationName>
+      <EntityType>2</EntityType>
+    </Name>
+    <ContactInfo>
+      <ContactName>BILLING OFFICE</ContactName>
+      <PhoneNumber>8136362040</PhoneNumber>
+    </ContactInfo>
+  </Submitter>
+  <Receiver>
+    <PrimaryIdentification>
+      <PrimaryIdentifierID>431420764</PrimaryIdentifierID>
+      <PrimaryIdentificationType>46</PrimaryIdentificationType>
+    </PrimaryIdentification>
+    <Name>
+      <OrganizationName>GATEWAYEDI</OrganizationName>
+      <EntityType>2</EntityType>
+    </Name>
+  </Receiver>
+  <Subscriber>
+    <PrimaryIdentification>
+      <PrimaryIdentifierID>B99977791G</PrimaryIdentifierID>
+      <PrimaryIdentificationType>MI</PrimaryIdentificationType>
+    </PrimaryIdentification>
+    <Name>
+      <FirstName>HAL</FirstName>
+      <LastName>HOWLING</LastName>
+      <EntityType>1</EntityType>
+    </Name>
+    <ClaimFilingCode>AM</ClaimFilingCode>
+    <PayorResponsibilityOrder>P</PayorResponsibilityOrder>
+    <Payor>
+      <PrimaryIdentification>
+        <PrimaryIdentifierID>999888777</PrimaryIdentifierID>
+        <PrimaryIdentificationType>PI</PrimaryIdentificationType>
+      </PrimaryIdentification>
+      <Name>
+        <OrganizationName>HEISMAN INSURANCE COMPANY</OrganizationName>
+        <EntityType>2</EntityType>
+      </Name>
+    </Payor>
+  </Subscriber>
+  <Patient>
+    <Name>
+      <FirstName>DJ</FirstName>
+      <LastName>DIMPSON</LastName>
+      <MiddleInitial>W</MiddleInitial>
+      <EntityType>1</EntityType>
+    </Name>
+    <Address>
+      <addressLine1>32 BUFFALO RUN</addressLine1>
+      <addressLine2>APT 6</addressLine2>
+      <city>ROCKING HORSE</city>
+      <state>CA</state>
+      <zipcode>99666</zipcode>
+    </Address>
+    <ContactInfo>
+      <ContactName>DJ DIMPSON</ContactName>
+      <PhoneNumber>8157665902</PhoneNumber>
+    </ContactInfo>
+    <RelationshipCode>21</RelationshipCode>
+    <PatientGender>M</PatientGender>
+    <PatientDOB>19480601</PatientDOB>
+    <PropertyCasualtyClaimNumber>32323232</PropertyCasualtyClaimNumber>
+  </Patient>
+  <ClaimP>
+    <PatientAccountNumber>20000002</PatientAccountNumber>
+    <ClaimChargeAmount>150</ClaimChargeAmount>
+    <Facility_Type_Code>11</Facility_Type_Code>
+    <Facility_Type_Code_Qual>B</Facility_Type_Code_Qual>
+    <Claim_Frequency_Code>1</Claim_Frequency_Code>
+    <Signature_Indicator>Y</Signature_Indicator>
+    <Medicare_Assignment_Code>A</Medicare_Assignment_Code>
+    <BenefitsAssignmentCertificationIndicator>Y</BenefitsAssignmentCertificationIndicator>
+    <Release_Information_Code>Y</Release_Information_Code>
+    <ClaimSupplementalInfo/>
+  </ClaimP>
+  <BillingProvider>
+    <PrimaryIdentification>
+      <PrimaryIdentifierID>1111111111</PrimaryIdentifierID>
+      <PrimaryIdentificationType>XX</PrimaryIdentificationType>
+    </PrimaryIdentification>
+    <Name>
+      <OrganizationName>ACME MEDICAL GROUP</OrganizationName>
+      <EntityType>2</EntityType>
+    </Name>
+    <Address>
+      <addressLine1>100 MAIN ST</addressLine1>
+      <addressLine2/>
+      <city>TAMPA</city>
+      <state>FL</state>
+      <zipcode>336346344</zipcode>
+    </Address>
+  </BillingProvider>
+  <DiagnosisCode>
+    <TypeCode>ABK</TypeCode>
+    <Code>A15.6</Code>
+  </DiagnosisCode>
+  <ServiceLine>
+    <AssignedNumber>1</AssignedNumber>
+    <ProfessionalService>
+      <DateOfService>
+        <DateTimeVal>20120915</DateTimeVal>
+        <DateTimeQualifier>472</DateTimeQualifier>
+      </DateOfService>
+      <ProcedureIdentifier>HC</ProcedureIdentifier>
+      <ProcedureCode>99001</ProcedureCode>
+      <LineItemChargeAmount>150</LineItemChargeAmount>
+      <Measurement_Unit>UN</Measurement_Unit>
+      <UnitCount>1</UnitCount>
+      <LineItemControlNumber>3333333</LineItemControlNumber>
+      <CompositeElement>
+        <DiagnosisCodePointer>1</DiagnosisCodePointer>
+      </CompositeElement>
+    </ProfessionalService>
+  </ServiceLine>
+</ClaimCore>

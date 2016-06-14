@@ -8,19 +8,19 @@
 
 
 @FileProc_Kafka_produce
-Scenario: Able to produce and consume kafka - 172.26.11.135:9092
+Scenario: Able to produce and consume kafka - 172.26.11.135 - messages
   Given I have Random expressions
-  When I send it to kafka 172.26.11.135:9092 server to fusetest topic
+  When I send it to kafka 172.26.11.135:9092 server to TestMessage topic
   Then I should consume it in 0 seconds
 
 @FileProc_Kafka_produce
-Scenario: Able to produce and consume kafka - shortfusedev
+Scenario: Able to produce and consume kafka - shortfusedev-dn9.westus.cloudapp.azure.com:9092 - messages to Claim topic
   Given I have Random expressions
   When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to fusetest topic
   Then I should consume it in 0 seconds
   
 @FileProc_Kafka_produce
-Scenario Outline: Able to produce and consume kafka - shortfusedev.dn8-dn11
+Scenario Outline: Able to produce/consume kafka
   Given I have brokers for kafka  
 	| kafka broker                                     |
 	| shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
@@ -32,18 +32,18 @@ Scenario Outline: Able to produce and consume kafka - shortfusedev.dn8-dn11
   Then I should consume it in 0 seconds
 
 Examples:
-   | topic        |
-   | fusetest     |
-   | fusetest2    |
-   | Patient      |
-   | Practitioner |
-   | Claim        |
-   | Coverage     |
-   | Location     |
+  | topic        |
+  | fusetest     |
+  | fusetest2    |
+  | TestMessage  |
+  | Practitioner |
+  | Claim        |
+  | Coverage     |
+  | Location     |
 
 #fusetest, fusetest2, fusetopic2, test
 @FileProc_Kafka_produce
-Scenario: Able to produce and consume kafka - shortfusedev - to topic - fusetest
+Scenario: Able to produce and consume kafka - shortfusedev - messages to topic
   Given I have Random expressions
   When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to fusetest topic
   Then I should consume it in 0 seconds
@@ -92,28 +92,27 @@ Scenario: Able to get data folder
   When I call kafka server
   Then data folder is created if missing
 
+# run all topic at once
+#| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+#| shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+#| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+#| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
 @FileProc_Kafka_consume
-Scenario: Able to consume kafka all topics from 172.26.8.26-29
+Scenario: Able to consume kafka all topics
   Given I have brokers for kafka 
 	| kafka broker     |
 	| 172.26.8.26:9092 |
 	| 172.26.8.27:9092 |
 	| 172.26.8.28:9092 |
 	| 172.26.8.29:9092 |	 
-   And I have topic list for kafka dummy, jnmtopic, JnmTopic, fusetest, Claim, 
-   And I have topic list for kafka Coverage, Immunization, Location,fusetest1, fusetest2, fusetest3
-   And I have topic list for kafka Medication, Organization, Patient, Procedure, Practitioner
+  And I have topic list for kafka dummy, jnmtopic, JnmTopic, fusetest, Claim, 
+  And I have topic list for kafka Coverage, Immunization, Location,fusetest1, fusetest2, fusetest3
+  And I have topic list for kafka Medication, Organization, Patient, Procedure, Practitioner
   When I call kafka server
   Then I should retrieve last 2 messages in -1 seconds
 
 @FileProc_Kafka_consume
-Scenario: Able to consume kafka all topics from app.config
-  Given I have brokers for kafka from AcceptanceTest:KafkaUri 	 
-    And I have topic list AcceptanceTest:KafkaTopicsAll for kafka
-   Then I should retrieve last 2 messages in -1 seconds
-
-@FileProc_Kafka_consume
-Scenario Outline: Able to consume kafka topic from 172.26.8.26-29
+Scenario Outline: Able to consume kafka topic
   Given I have brokers for kafka
     | kafka broker     |
 	| 172.26.8.26:9092 |
@@ -125,16 +124,34 @@ Scenario Outline: Able to consume kafka topic from 172.26.8.26-29
   Then I should retrieve last 2 messages in -1 seconds
 
 Examples:
-    | topic        |  
-    | fusetest     |  
-    | fusetest2    |  
-    | Practitioner |  
-    | Location     |  
-    | Patient      | 
-    | Procedure    | 
-    | Organization |  
-    | Claim        |  
-    | Coverage     |  
+    | topic        | info           |
+    | fusetest     | A messages     |
+    | fusetest2    | B messages     |
+    | Practitioner | 10 messages    |
+    | Location     | 2 messages  v1 |
+    | Patient      | 4 messages     |
+    | Procedure    | 4 messages     |
+    | Organization | 4 messages  v1 |
+    | Claim        | 4 messages  v1 |
+    | Coverage     | 2 messages  v1 |
+
+#@FileProc_Kafka
+#Scenario Outline: Able to consume kafka prmlinux02.cloudapp.net by topic
+#  Given I have brokers for kafka 
+#	| kafka broker                 |
+#	| prmlinux02.cloudapp.net:9092 |	 
+#  And I have kafka <topic>    
+#  When I call kafka server
+#  Then I should retrieve last 2 messages in 0 seconds
+#Examples:
+#    | topic        | info        |
+#    | Organization | 4 messages  |
+#    | Claim        | 4 messages  |
+#    | Coverage     | 2 messages  |
+#    | Patient      | 2 messages  |
+#    | Practitioner | 6 messages  |
+#    | Test_Claim   | 16 messages |
+#    | TestMessage  | 3 messages  |
 
  @FileProc_Json
   Scenario: Able to parse json message Patient
@@ -159,6 +176,7 @@ Examples:
     | category.coding[0].primary               | True     |
     | onset.onsetDateTime.offset               | 0        |
   
+
  @Xml_validation_XXE
 Scenario: Able to parse xml message with XmlResolver
 Given I have xml content 

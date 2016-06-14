@@ -1,0 +1,43 @@
+{
+  "encounterClass": "Other",
+  "type": [
+    {
+      "coding": [
+        {
+          "system": "2.16.840.1.113883.6.12",
+          "code": "99221",
+          "display": "Inpatient",
+          "primary": true
+        }
+      ],
+      "text": " Checkup Examination "
+    }
+  ],
+  "patient": { "reference": "Patient/28e211e8e0669a1fb70c573a8ac27fb3" },
+  "participant": [
+    {
+      "type": [
+        {
+          "coding": [
+            {
+              "system": "2.16.840.1.113883.6.96",
+              "code": "59058001",
+              "display": "General PhysicianSep23_3PM",
+              "primary": true
+            }
+          ]
+        }
+      ],
+      "individual": { "reference": "Practitioner/11fb49977c0556d3d6d3868a3e687bfe" }
+    }
+  ],
+  "period": {
+    "startTime": {
+      "value": 634843296000000000,
+      "offset": 0,
+      "text": "9/27/2012 8:00:00 AM"
+    }
+  },
+  "resourceId": "756517bdb84f161d0466678a25aacdfe",
+  "ResourceDocumentPath": "3mqzdxt93ch5p6gbsp35o9oup7jo5qo8jk7waomj5r336xz7cyno/Encounter/1"
+}

@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -34,51 +33,6 @@ namespace Kafka.Steps
     [Binding]
     public class KafkaSteps
     {
-        public static KafkaOptions options { get; set; }
-
-        private static string KafkaUri { get; set; }
-        private static IEnumerable<Uri> KafkaUris
-        {
-            get
-            {
-                return KafkaUri.Replace(" ", "").Split(",;|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(o => new Uri(o));
-            }
-        }
-
-        private static int KafkaDefaultBatchSize { get; set; }
-        private static int KafkaDefaultBatchDelayTime { get; set; }
-
-        public static void InitKafkaFromConfig()
-        {
-            string suri = string.Empty;
-            string s1 = ConfigurationManager.AppSettings["AcceptanceTest:KafkaUri"];
-            foreach (string s in s1.Replace(" ", "").Split(",;|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-            {
-                string slist = s.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? s : "http://" + s;
-                var ss = slist.Split("[]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                if (ss.Length == 3)
-                {
-                    var ssmid = ss[1].Split(" -".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = int.Parse(ssmid[0]); i <= int.Parse(ssmid[1]); i++)
-                        suri += $"{ss[0]}{i}{ss[2]},";
-                    if (suri.EndsWith(",")) suri = suri.Substring(0, suri.Length - 1);
-                }
-                else
-                    suri += slist + ",";
-            }
-            KafkaUri = suri;
-
-            int n = 100;
-            string s2 = ConfigurationManager.AppSettings["AcceptanceTest:KafkaDefaultBatchSize"];
-            int.TryParse(s2, out n);
-            KafkaDefaultBatchSize = n;
-
-            n = 500;
-            string s3 = ConfigurationManager.AppSettings["AcceptanceTest:KafkaDefaultBatchDelayTime"];
-            int.TryParse(s3, out n);
-            KafkaDefaultBatchDelayTime = n;
-        }
-
         /// <summary>
         /// put random list of messages into ScenarioContext.Current["kafkaMessages"]
         /// </summary>
@@ -211,7 +165,7 @@ namespace Kafka.Steps
         internal static void LogJobs()
         {
             var topics = ScenarioContext.Current["kafkaTopics"] as List<string>;
-            string jobs = "topics for testing \n\t" + topics.Aggregate((x, y) => x + ", " + y) + "\n";
+            string jobs = "topics for testing \n\t"+ topics.Aggregate((x, y) => x + ", " + y) + "\n";          
 
             int k = 0;
             foreach (string key in topicJsons.Keys)
@@ -274,7 +228,7 @@ namespace Kafka.Steps
         }
 
         internal static Dictionary<string, List<string>> topicJsons = new Dictionary<string, List<string>>();
-
+     
         [Given("I have zookeepers for kafka")]
         public void Given_I_have_zookeepers_for_kafka(Table table)
         {
@@ -282,7 +236,7 @@ namespace Kafka.Steps
             foreach (var row in table.Rows)
                 lst.Add(row[0]);
             ScenarioContext.Current["zookeepers"] = lst;
-        }
+        }       
 
         /// <summary>
         /// returns dictionary with kvp: key - offset, value - json
@@ -303,9 +257,9 @@ namespace Kafka.Steps
                 //BackoffInterval=new TimeSpan (0,0,3),
                 //MaxWaitTimeForMinimumBytes = new TimeSpan(0, 0, 3),
             }, offsetPosition);
-           
+          
             if (!topicJsons.ContainsKey(topic)) topicJsons[topic] = new List<string>();
-
+            
             try
             {
                 var to = GetProducerTopicOffset(options, topic);
@@ -318,7 +272,7 @@ namespace Kafka.Steps
                         : "topic does not have messages" };
                     return list;
                 }
-
+                
                 var messages = (delay < 0) ? consumer.Consume() : consumer.Consume(new CancellationTokenSource(delay * 1000).Token);
 
                 #region terminate long running thread
@@ -327,21 +281,21 @@ namespace Kafka.Steps
                 Thread workerThread = new Thread(() =>
                 {
                     foreach (var data in messages)
-                    {
-                        var message = data.Value.ToUtf8String();
-                        var key = data.Key.ToUtf8String();
-                        list.Add(data.Meta.Offset, message);
+                {
+                    var message = data.Value.ToUtf8String();
+                    var key = data.Key.ToUtf8String();
+                    list.Add(data.Meta.Offset, message);
 
-                        Console.WriteLine($"{k++} {DateTime.Now.ToString()} [{topic}] PartitionId {data.Meta.PartitionId}, Offset {data.Meta.Offset}, key: {key}, message {message}");
-                        string jfile = $"{topic}-{data.Meta.PartitionId}-{data.Meta.Offset}-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json";
-                        jfile = Path.Combine(ProjTmp, jfile);
-                        File.WriteAllText(jfile, message);
+                    Console.WriteLine($"{k++} {DateTime.Now.ToString()} [{topic}] PartitionId {data.Meta.PartitionId}, Offset {data.Meta.Offset}, key: {key}, message {message}");
+                    string jfile = $"{topic}-{data.Meta.PartitionId}-{data.Meta.Offset}-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json";
+                    jfile = Path.Combine(ProjTmp, jfile);
+                    File.WriteAllText(jfile, message);
 
-                        topicJsons[topic].Add(Path.GetFileName(jfile));
+                    topicJsons[topic].Add(Path.GetFileName(jfile));
 
-                        if (data.Meta.Offset == to.FirstOffset + to.Items - 1)
-                            break;
-                    }
+                    if (data.Meta.Offset == to.FirstOffset + to.Items - 1)
+                        break;
+                }
                 });
 
                 workerThread.Start();
@@ -370,21 +324,6 @@ namespace Kafka.Steps
         {
             TableToContextList("kafkaBrokers", table);
         }
-
-        [Given(@"I have brokers for kafka from AcceptanceTest:KafkaUri")]
-        public void Given_I_have_brokers_for_kafka_from_AcceptanceTest_KafkaUri()
-        {
-            ScenarioContext.Current["kafkaBrokers"] =
-                KafkaUris.Select(o => o.Authority).ToList(); // Authority = "172.26.8.26:9092";  OriginalString: "http://172.26.8.26:9092"
-        }
-
-        [Given(@"I have topic list AcceptanceTest:KafkaTopicsAll for kafka")]
-        public void Given_I_have_topic_list_AcceptanceTest_KafkaTopicsAll_for_kafka()
-        {
-            ScenarioContext.Current["kafkaTopics"] = 
-                ConfigurationManager.AppSettings["AcceptanceTest:KafkaTopicsAll"].Split (" ,;".ToCharArray(),StringSplitOptions.RemoveEmptyEntries).ToList();
-        }
-
 
         [When(@"I call kafka server")]
         public void When_I_call_kafka_server()
@@ -493,7 +432,19 @@ namespace Kafka.Steps
             catch (Exception ex) { Console.WriteLine(ex); }
             Console.WriteLine(" ================== end of DebugKafkaMessages " + info);
         }
-        
+
+        private void DebugOffsets(List<OffsetResponse> offsets)
+        {
+            foreach (var offs in offsets)
+            {
+                {
+                    string strOffsets = "";
+                    foreach (var off in offs.Offsets) strOffsets += off + ";";
+                    Console.WriteLine($" PartitionId {offs.PartitionId}; Offsets: {strOffsets}");
+                }
+            }
+        }
+
         public struct TopicOffset
         {
             public long FirstOffset;
@@ -509,18 +460,13 @@ namespace Kafka.Steps
             }
         }
 
-        internal static string DebugOffset(TopicOffset to) {
-            return  $"topic {to.Topic,20}; FirstOffset: {to.FirstOffset,7}; "+
-                $"Items: {to.Items,7}; PartitionId: {to.PartitionId}\n";
-        }
-
         internal static TopicOffset GetProducerTopicOffset(KafkaOptions options, string topic)
         {
             var to = new TopicOffset();
             using (var producer = new Producer(new BrokerRouter(options))
             {
                 BatchSize = 100,
-                BatchDelayTime = TimeSpan.FromMilliseconds(5000)
+                BatchDelayTime = TimeSpan.FromMilliseconds(2000)
             })
             {
                 List<OffsetResponse> offsets = null;
@@ -616,13 +562,12 @@ namespace Kafka.Steps
                 try
                 {
                     TopicOffset to = GetProducerTopicOffset(options, topic);
-                    DebugOffset(to);
                     if (to.Items == 0)
                     {
                         if (to.PartitionId == -1)
                         {
                             topicJsons[topic] = new List<string> { "cannot connect to the Kafka server, exiting..." };
-                            // break;
+                            break;
                         }
 
                         string tmsg = to.Topic == null
@@ -942,17 +887,10 @@ namespace Kafka.Steps
 
         #region Setup/Teardown
 
-        internal static void SetKafkaOptions()
-        {
-            if (string.IsNullOrEmpty(KafkaUri)) InitKafkaFromConfig();
-            options = new KafkaOptions(KafkaUris.ToArray());
-        }
-
         [BeforeScenario]
         public void SetupKafka()
         {
-            // just place holder 
-            SetKafkaOptions();
+            // just place holder                     
         }
 
         #endregion

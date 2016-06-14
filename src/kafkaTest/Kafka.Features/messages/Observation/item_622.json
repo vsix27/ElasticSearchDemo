@@ -1,0 +1,85 @@
+{
+  "code": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.6.1",
+        "code": "L",
+        "display": "3094-0"
+      }
+    ],
+    "text": "Urea nitrogen, Serum"
+  },
+  "category": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.10.20.22.4.2",
+        "code": "Laboratory"
+      }
+    ],
+    "text": "Laboratory"
+  },
+  "value": {
+    "valueQuantity": {
+      "value": {
+        "lo": 67,
+        "mid": 0,
+        "hi": 0,
+        "flags": 65536
+      },
+      "units": "lb_av"
+    }
+  },
+  "interpretation": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.5.83",
+        "code": "OTH",
+        "display": "Others"
+      }
+    ],
+    "text": "Below low normal"
+  },
+  "effective": {
+    "effectiveTimeDateTime": {
+      "value": 635424665400000000,
+      "offset": -420,
+      "text": "201408010509"
+    }
+  },
+  "status": "Final",
+  "identifier": [
+    {
+      "system": "2.16.840.1.113883.10.20.22.4.2",
+      "value": "4DF8F312-1977-42E2-94FD-43D8F9F29F011"
+    },
+    {
+      "system": "2.16.840.1.113883.10.20.22.4.2",
+      "value": "4DF8F312-1977-42E2-94FD-43D8F9F29F021"
+    }
+  ],
+  "subject": { "reference": "Patient/33b40000-065d-6451-8e9e-08d35406fc58" },
+  "referenceRange": [
+    {
+      "low": {
+        "value": {
+          "lo": 150,
+          "mid": 0,
+          "hi": 0,
+          "flags": 0
+        },
+        "units": "%"
+      },
+      "high": {
+        "value": {
+          "lo": 170,
+          "mid": 0,
+          "hi": 0,
+          "flags": 0
+        },
+        "units": "%"
+      }
+    }
+  ],
+  "resourceId": "33b40000-065d-6451-1f0b-08d35406fcf4",
+  "ResourceDocumentPath": "5jaiir7arophn6ouy4ooubhutceq5nzc6wyeuf1gugsqajmehr8y/DiagnosticReport/1/Observation/1"
+}

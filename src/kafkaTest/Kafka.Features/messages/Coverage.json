@@ -1,0 +1,21 @@
+{
+	"identifier": [{
+		"system": "MI",
+		"value": "B99977791G",
+		"use": "Official"
+	}],
+	"type": {
+		"system": "http:\/\/hl7.org\/fhir\/v3\/ActCode",
+		"code": "AUTOPOL",
+		"display": "automobile"
+	},
+	"subscriberId": {
+		"system": "MI",
+		"value": "B99977791G",
+		"use": "Official"
+	},
+	"sequence": {
+		"positiveInt": 1
+	},
+	"resourceId": "99a93ff1-3dd7-44e1-bb68-d4c62746b1a7"
+}

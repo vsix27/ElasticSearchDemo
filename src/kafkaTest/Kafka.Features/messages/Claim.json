@@ -1,0 +1,141 @@
+{
+  "identifier": [
+    {
+      "system": "PatientAccountNumber",
+      "value": "900000032",
+      "use": "Official"
+    }
+  ],
+  "type": "Professional",
+  "resourceId": "8551080b-2742-4afe-b5a2-83f94b7f2001",
+  "patient": { "display": "DJ DIMPSON" },
+  "organization": {
+    "reference": "Organization\/c2ff913f-5744-479d-9458-a0150b36ba57",
+    "display": "ASSOCIATED MEDICAL GROUP"
+  },
+  "provider": {
+    "reference": "Practitioner\/eaa8e26c-d572-41be-bbf5-6b3f7ef6eb5e",
+    "display": "BRUNO MOGLIE"
+  },
+  "coverage": [
+    {
+      "sequence": { "positiveInt": 1 },
+      "focal": true,
+      "coverage": { "reference": "Coverage\/99a93ff1-3dd7-44e1-bb68-d4c62746b1a7" },
+      "businessArrangement": "",
+      "relationship": {
+        "system": "http:\/\/hl7.org\/fhir\/relationship",
+        "code": "3",
+        "display": "other"
+      }
+    }
+  ],
+  "item": [
+    {
+      "sequence": { "positiveInt": 1 },
+      "type": {
+        "system": "http:\/\/hl7.org\/fhir\/v3\/ActCode",
+        "code": "CSINV",
+        "display": "clinical service invoice"
+      },
+      "provider": {
+        "reference": "Practitioner\/eaa8e26c-d572-41be-bbf5-6b3f7ef6eb5e",
+        "display": "BRUNO MOGLIE"
+      },
+      "diagnosisLinkId": [ { "positiveInt": 1 } ],
+      "service": {
+        "system": "2.16.840.1.113883.6.12",
+        "code": "99201",
+        "display": "HC"
+      },
+      "serviceDate": { "value": 632663136000000000 },
+      "quantity": {
+        "value": {
+          "lo": 1,
+          "mid": 0,
+          "hi": 0,
+          "flags": 0
+        },
+        "units": "UN",
+        "system": "urn:std:iso:4217",
+        "code": "hsp"
+      },
+      "net": {
+        "value": {
+          "lo": 150,
+          "mid": 0,
+          "hi": 0,
+          "flags": 0
+        },
+        "units": "USD",
+        "system": "urn:std:iso:4217",
+        "code": "hsp"
+      }
+    },
+    {
+      "sequence": { "positiveInt": 2 },
+      "type": {
+        "system": "http:\/\/hl7.org\/fhir\/v3\/ActCode",
+        "code": "CSINV",
+        "display": "clinical service invoice"
+      },
+      "provider": {
+        "reference": "Practitioner\/eaa8e26c-d572-41be-bbf5-6b3f7ef6eb5e",
+        "display": "BRUNO MOGLIE"
+      },
+      "diagnosisLinkId": [ { "positiveInt": 1 } ],
+      "service": {
+        "system": "2.16.840.1.113883.6.12",
+        "code": "26010",
+        "display": "HC"
+      },
+      "serviceDate": { "value": 632663136000000000 },
+      "quantity": {
+        "value": {
+          "lo": 1,
+          "mid": 0,
+          "hi": 0,
+          "flags": 0
+        },
+        "units": "UN",
+        "system": "urn:std:iso:4217",
+        "code": "hsp"
+      },
+      "net": {
+        "value": {
+          "lo": 35,
+          "mid": 0,
+          "hi": 0,
+          "flags": 0
+        },
+        "units": "USD",
+        "system": "urn:std:iso:4217",
+        "code": "hsp"
+      }
+    }
+  ],
+  "diagnosis": [
+    {
+      "sequence": { "positiveInt": 1 },
+      "diagnosis": {
+        "system": "2.16.840.1.113883.6.103",
+        "code": "8540",
+        "display": "BK"
+      }
+    }
+  ],
+  "facility": {
+    "reference": "Location\/62844062-4e97-4f74-8cbb-79b2a405ae0a",
+    "display": "ASSOCIATED MEDICAL GROUP"
+  },
+  "extension": [
+    {
+      "url": "http:\/\/hl7.org\/fhir\/StructureDefinition\/claim-claimProviders",
+      "value": { "string": "RenderingProvider=Practitioner\/eaa8e26c-d572-41be-bbf5-6b3f7ef6eb5e" }
+    },
+    {
+      "url": "http:\/\/hl7.org\/fhir\/StructureDefinition\/claim-facilityCode",
+      "value": { "string": "11" }
+    }
+  ]
+}

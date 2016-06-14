@@ -1,0 +1,13 @@
+{
+  "encounterClass": "Other",
+  "patient": { "reference": "Patient/07f1a991e2b7528ab5c5dbb08499f3ac" },
+  "period": {
+    "startTime": {
+      "value": 635694714000000000,
+      "offset": 0,
+      "text": "6/9/2015 6:30:00 PM"
+    }
+  },
+  "resourceId": "cf9b0343c3ae34f855b29a64434a2599",
+  "ResourceDocumentPath": "f8x557g4ijoi9dgaieenjs65jzqohk94m7gumpkbih9j9k1pqpco/Encounter/1"
+}

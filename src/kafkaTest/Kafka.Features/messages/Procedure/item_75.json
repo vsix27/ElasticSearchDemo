@@ -1,0 +1,46 @@
+{
+  "identifier": [
+    {
+      "system": "2.16.840.1.113883.10.20.22.4.13",
+      "value": "2.16.840.1.113883.19",
+      "use": ""
+    }
+  ],
+  "patient": { "reference": "Patient/28e211e8e0669a1fb70c573a8ac27fb3" },
+  "status": "Aborted",
+  "type": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.6.96",
+        "code": "274025005",
+        "display": "Colonic polypectomy",
+        "primary": true
+      }
+    ],
+    "text": "Colonic polypectomy"
+  },
+  "bodySite": [
+    {
+      "siteCodeableConcept": {
+        "coding": [
+          {
+            "system": "2.16.840.1.113883.6.96",
+            "code": "416949008",
+            "display": "Abdomen and pelvis",
+            "primary": true
+          }
+        ]
+      }
+    }
+  ],
+  "performer": [ { "person": { "reference": "Practitioner/f9df35c1668ffd3cff59351f37d05aa9" } } ],
+  "performed": {
+    "performedDateTime": {
+      "value": 634322880000000000,
+      "offset": 0,
+      "text": "20110203"
+    }
+  },
+  "resourceId": "21d2fbf2f11d3d94dd92e6094b174da1",
+  "ResourceDocumentPath": "3mqzdxt93ch5p6gbsp35o9oup7jo5qo8jk7waomj5r336xz7cyno/Procedure/4"
+}

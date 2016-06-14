@@ -1,0 +1,27 @@
+{
+  "code": {
+    "coding": [
+      {
+        "system": "2.16.840.1.113883.6.1",
+        "code": "OTH1"
+      }
+    ],
+    "text": "24356-8"
+  },
+  "status": "Final",
+  "subject": { "reference": "Patient/33b40000-065d-6451-2ee4-08d35803b3c6" },
+  "identifier": [
+    {
+      "system": "2.16.840.1.113883.10.20.22.4.1",
+      "value": "04AE7E52-A8F3-471A-ACBA-5432B2856D80"
+    }
+  ],
+  "result": [
+    { "reference": "Observation/33b40000-065d-6451-16a5-08d35803cb32" },
+    { "reference": "Observation/33b40000-065d-6451-1915-08d35803cb32" },
+    { "reference": "Observation/33b40000-065d-6451-1b88-08d35803cb32" },
+    { "reference": "Observation/33b40000-065d-6451-1dd9-08d35803cb32" }
+  ],
+  "resourceId": "33b40000-065d-6451-13ee-08d35803cb32",
+  "ResourceDocumentPath": "9qf695cxehnceexzuk4uc58kg5qzoaqj9kz3bnntannxxccsrkbo/DiagnosticReport/2"
+}

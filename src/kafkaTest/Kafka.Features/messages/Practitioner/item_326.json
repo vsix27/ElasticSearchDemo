@@ -1,0 +1,37 @@
+{
+  "identifier": [
+    {
+      "system": "1.2.3.4.5.65.88.2",
+      "value": "15861-DR",
+      "type": {
+        "coding": [
+          {
+            "system": "1.2.3.4.5.65.88.2",
+            "code": "15861-DR"
+          }
+        ]
+      }
+    }
+  ],
+  "name": {
+    "family": [ "DiagnosticReport" ],
+    "given": [ "Practitioner" ]
+  },
+  "practitionerRole": [
+    {
+      "specialty": [
+        {
+          "coding": [
+            {
+              "system": "2.16.840.1.113883.6.101",
+              "code": "246Q00000X",
+              "display": "Technician, Pathology"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resourceId": "33b40000-065d-6451-0fee-08d35406fcf1",
+  "ResourceDocumentPath": "5jaiir7arophn6ouy4ooubhutceq5nzc6wyeuf1gugsqajmehr8y/DiagnosticReport/1/Practitioner/1"
+}
