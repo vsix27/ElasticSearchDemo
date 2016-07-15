@@ -80,10 +80,6 @@ Scenario: Able to consume kafka - shortfusedev
   Then I should retrieve last 2 messages in -1 seconds
 # in log/output - for failed/timed out topics -search for '. The operation was canceled.' or '. The operation was canceled.'
 
-#| kafka broker                 |
-#| prmlinux02.cloudapp.net:9092 |	 
-#| 172.26.11.135:9092 |	 
-
 @FileProc_Kafka_datafolder
 Scenario: Able to get data folder
   Given I have brokers for kafka 
@@ -96,10 +92,10 @@ Scenario: Able to get data folder
 Scenario: Able to consume kafka all topics from 172.26.8.26-29
   Given I have brokers for kafka 
 	| kafka broker     |
-	| 172.26.8.26:9092 |
-	| 172.26.8.27:9092 |
-	| 172.26.8.28:9092 |
-	| 172.26.8.29:9092 |	 
+	| 172.26.18.26:9092 |
+	| 172.26.118.27:9092 |
+	| 172.26.18.28:9092 |
+	| 172.26.18.29:9092 |	 
    And I have topic list for kafka dummy, jnmtopic, JnmTopic, fusetest, Claim, 
    And I have topic list for kafka Coverage, Immunization, Location,fusetest1, fusetest2, fusetest3
    And I have topic list for kafka Medication, Organization, Patient, Procedure, Practitioner

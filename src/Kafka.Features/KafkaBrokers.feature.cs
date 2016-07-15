@@ -259,18 +259,18 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to get data folder", new string[] {
                         "FileProc_Kafka_datafolder"});
-#line 88
+#line 84
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "kafka broker"});
             table4.AddRow(new string[] {
                         "172.26.8.26:9092"});
-#line 89
+#line 85
   testRunner.Given("I have brokers for kafka", ((string)(null)), table4, "Given ");
-#line 92
+#line 88
   testRunner.When("I call kafka server", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 93
+#line 89
   testRunner.Then("data folder is created if missing", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -283,32 +283,32 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to consume kafka all topics from 172.26.8.26-29", new string[] {
                         "FileProc_Kafka_consume"});
-#line 96
+#line 92
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "kafka broker"});
             table5.AddRow(new string[] {
-                        "172.26.8.26:9092"});
+                        "172.26.18.26:9092"});
             table5.AddRow(new string[] {
-                        "172.26.8.27:9092"});
+                        "172.26.118.27:9092"});
             table5.AddRow(new string[] {
-                        "172.26.8.28:9092"});
+                        "172.26.18.28:9092"});
             table5.AddRow(new string[] {
-                        "172.26.8.29:9092"});
-#line 97
+                        "172.26.18.29:9092"});
+#line 93
   testRunner.Given("I have brokers for kafka", ((string)(null)), table5, "Given ");
-#line 103
+#line 99
    testRunner.And("I have topic list for kafka dummy, jnmtopic, JnmTopic, fusetest, Claim,", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 104
+#line 100
    testRunner.And("I have topic list for kafka Coverage, Immunization, Location,fusetest1, fusetest2" +
                     ", fusetest3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 105
+#line 101
    testRunner.And("I have topic list for kafka Medication, Organization, Patient, Procedure, Practit" +
                     "ioner", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 106
+#line 102
   testRunner.When("I call kafka server", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 107
+#line 103
   testRunner.Then("I should retrieve last 2 messages in -1 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -321,13 +321,13 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to consume kafka all topics from app.config", new string[] {
                         "FileProc_Kafka_consume"});
-#line 110
+#line 106
 this.ScenarioSetup(scenarioInfo);
-#line 111
+#line 107
   testRunner.Given("I have brokers for kafka from AcceptanceTest:KafkaUri", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 112
+#line 108
     testRunner.And("I have topic list AcceptanceTest:KafkaTopicsAll for kafka", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 113
+#line 109
    testRunner.Then("I should retrieve last 2 messages in -1 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -354,7 +354,7 @@ this.ScenarioSetup(scenarioInfo);
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to consume kafka topic from 172.26.8.26-29", @__tags);
-#line 116
+#line 112
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -367,13 +367,13 @@ this.ScenarioSetup(scenarioInfo);
                         "172.26.8.28:9092"});
             table6.AddRow(new string[] {
                         "172.26.8.29:9092"});
-#line 117
+#line 113
   testRunner.Given("I have brokers for kafka", ((string)(null)), table6, "Given ");
-#line 123
+#line 119
   testRunner.And(string.Format("I have kafka {0}", topic), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 124
+#line 120
   testRunner.When("I call kafka server", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 125
+#line 121
   testRunner.Then("I should retrieve last 2 messages in -1 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -386,11 +386,11 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse json message Patient", new string[] {
                         "FileProc_Json"});
-#line 140
+#line 136
   this.ScenarioSetup(scenarioInfo);
-#line 141
+#line 137
   testRunner.Given("I have json file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 142
+#line 138
   testRunner.When("I parse it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -408,7 +408,7 @@ this.ScenarioSetup(scenarioInfo);
             table7.AddRow(new string[] {
                         "address[0].addressLine[2]",
                         "null"});
-#line 143
+#line 139
   testRunner.Then("I should be find in file <messages\\Patient\\item_215.json> matching json values", ((string)(null)), table7, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -421,11 +421,11 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse json message Condition", new string[] {
                         "FileProc_Json"});
-#line 151
+#line 147
   this.ScenarioSetup(scenarioInfo);
-#line 152
+#line 148
   testRunner.Given("I have json file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 153
+#line 149
   testRunner.When("I parse it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -446,7 +446,7 @@ this.ScenarioSetup(scenarioInfo);
             table8.AddRow(new string[] {
                         "onset.onsetDateTime.offset",
                         "0"});
-#line 154
+#line 150
   testRunner.Then("I should be find in file <messages\\Condition\\item_257.json> matching json values", ((string)(null)), table8, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -459,22 +459,22 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Able to parse xml message with XmlResolver", new string[] {
                         "Xml_validation_XXE"});
-#line 163
+#line 159
 this.ScenarioSetup(scenarioInfo);
-#line 164
+#line 160
 testRunner.Given("I have xml content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 165
+#line 161
 testRunner.When("I load it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 166
+#line 162
 testRunner.Then("It should be loaded as xmldoc.Load(xmlreader) loaded with DtdProcessing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 167
+#line 163
  testRunner.And("It should be loaded as xmldoc.Load(string) with CustomUrlResovler", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 168
+#line 164
  testRunner.And("It should be loaded as xdocument.Load(xmlreader) with DtdProcessing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 169
+#line 165
  testRunner.And("It should be deserialized as xmlSerializer.Deserialize(xmlreader) with DtdProcess" +
                     "ing.Prohibit", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 170
+#line 166
  testRunner.And("xml file should be cleaned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();

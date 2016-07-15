@@ -398,11 +398,6 @@ namespace Kafka.Steps
             Assert.IsNotNull(ProjTmp);
             Assert.IsTrue(Directory.Exists(ProjTmp));
             Console.WriteLine("file://" + ProjTmp.Replace("\\", "/"));
-            //Console.WriteLine("ftp://" + ProjTmp.Replace("\\", "/"));
-            //Console.WriteLine("folder://" + ProjTmp.Replace("\\", "/"));
-            //Console.WriteLine("path://" + ProjTmp.Replace("\\", "/"));
-            //Console.WriteLine("http://" + ProjTmp.Replace("\\", "/"));
-            //Console.WriteLine("directory://" + ProjTmp.Replace("\\", "/"));
         }
 
         [Given(@"I have topics for kafka")]
@@ -594,6 +589,7 @@ namespace Kafka.Steps
         [Then(@"I should retrieve last (.*) messages in (.*) seconds")]
         public void Then_I_should_retrieve_it_in_P0_seconds(int p0, int seconds)
         {
+            bool failed = false;
             if (p0 < 0) p0 = 1;
 
             var brokers = ScenarioContext.Current["kafkaBrokers"] as List<string>;
@@ -621,12 +617,16 @@ namespace Kafka.Steps
                     {
                         if (to.PartitionId == -1)
                         {
-                            topicJsons[topic] = new List<string> { "cannot connect to the Kafka server, exiting..." };
-                            // break;
+                            // topic is valid [from Zookeeper], but cannot retrieve [from Broker] 
+                            string uris = "\n\t\t" + options.KafkaServerUri.Select(x => x.Authority).Aggregate((x, y) => x + "\n\t\t" + y);
+                            topicJsons[topic] = new List<string> { $"cannot connect to the Kafka Broker(s) {uris}, exiting..." };
+
+                            failed = true;
+                            break;                           
                         }
 
                         string tmsg = to.Topic == null
-                         ? $"kafka topic '{topic}' is invalid - not present on server"
+                         ? $"kafka topic '{topic}' is invalid [detected by Zookeeper] - not present on server"
                          : $"kafka topic '{topic}' does not have messages... FirstOffset: {to.FirstOffset}";
                         topicJsons[topic] = new List<string> { tmsg };
                         Console.WriteLine(tmsg);
@@ -673,6 +673,7 @@ namespace Kafka.Steps
             }
             LogJobs();
             Console.WriteLine("file://" + ProjTmp.Replace("\\", "/"));
+            Assert.IsFalse(failed);
         }
 
         // bad
