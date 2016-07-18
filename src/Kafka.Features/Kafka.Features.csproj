@@ -153,6 +153,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="runtests.SpecFlow.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="KafkaBrokers.feature">

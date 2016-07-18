@@ -1,0 +1,608 @@
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafka_Shortfusedev
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker                                     |
+  | shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+  | shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn11.westus.cloudapp.azure.com:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have topics for kafka
+  --- table step argument ---
+  | topic               | info                               |
+  | fusetest            | 4 messages                         |
+  | fusetest2           | 4 messages                         |
+  | Practitioner        | 10 messages                        |
+  | Patient             | 4 messages                         |
+  | Procedure           | 4 messages                         |
+  | Organization        | 4 messages  v1                     |
+  | Claim               | 4 messages  v1                     |
+  | Coverage            | 2 messages  v1                     |
+  | Location            | 2 messages  v1                     |
+  | Condition           | FirstOffset: 258; Items: 7         |
+  | DiagnosticReport    | FirstOffset: 61; Items: 2 (53, 10) |
+  | Encounter           | 2 messages  v1                     |
+  | FamilyMemberHistory | FirstOffset: 16; Items: 2          |
+  | Immunization        | FirstOffset: 129; Items: 3         |
+  | Medication          | FirstOffset: 396; Items: 4         |
+  | AllergyIntolerance  | FirstOffset: 51; Items: 8          |
+-> done: KafkaSteps.Given_I_have_kafka_topics(<table>) (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+topics for testing 
+	fusetest, fusetest2, Practitioner, Patient, Procedure, Organization, Claim, Coverage, Location, Condition, DiagnosticReport, Encounter, FamilyMemberHistory, Immunization, Medication, AllergyIntolerance
+
+0. fusetest
+	 cannot connect to the Kafka Broker(s) 
+		shortfusedev-dn10.westus.cloudapp.azure.com:9092
+		shortfusedev-dn9.westus.cloudapp.azure.com:9092
+		shortfusedev-dn8.westus.cloudapp.azure.com:9092
+		shortfusedev-dn11.westus.cloudapp.azure.com:9092, exiting...
+messages will be saved in directory C:\a_work\vsix27\ElasticSearchDemo\src\Kafka.Features\bin\Debug\data
+file://C:/a_work/vsix27/ElasticSearchDemo/src/Kafka.Features/bin/Debug/data
+-> error:   Expected: False
+  But was:  True
+
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaAllTopicsFrom172_26_8_26_29
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker       |
+  | 172.26.18.26:9092  |
+  | 172.26.118.27:9092 |
+  | 172.26.18.28:9092  |
+  | 172.26.18.29:9092  |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have topic list for kafka dummy, jnmtopic, JnmTopic, fusetest, Claim,
+-> done: KafkaSteps.Given_I_have_topic_list_for_kafka_P0("dummy, jnmtopic, ...") (0.0s)
+And I have topic list for kafka Coverage, Immunization, Location,fusetest1, fusetest2, fusetest3
+-> done: KafkaSteps.Given_I_have_topic_list_for_kafka_P0("Coverage, Immuniz...") (0.0s)
+And I have topic list for kafka Medication, Organization, Patient, Procedure, Practitioner
+-> done: KafkaSteps.Given_I_have_topic_list_for_kafka_P0("Medication, Organ...") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+topics for testing 
+	dummy, jnmtopic, JnmTopic, fusetest, Claim, Coverage, Immunization, Location, fusetest1, fusetest2, fusetest3, Medication, Organization, Patient, Procedure, Practitioner
+
+0. dummy
+	 cannot connect to the Kafka Broker(s) 
+		172.26.18.26:9092
+		172.26.118.27:9092
+		172.26.18.28:9092
+		172.26.18.29:9092, exiting...
+file://C:/a_work/vsix27/ElasticSearchDemo/src/Kafka.Features/bin/Debug/data
+-> error:   Expected: False
+  But was:  True
+
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaAllTopicsFromApp_Config
+Given I have brokers for kafka from AcceptanceTest:KafkaUri
+-> done: KafkaSteps.Given_I_have_brokers_for_kafka_from_AcceptanceTest_KafkaUri() (0.0s)
+And I have topic list AcceptanceTest:KafkaTopicsAll for kafka
+-> done: KafkaSteps.Given_I_have_topic_list_AcceptanceTest_KafkaTopicsAll_for_kafka() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+One or more errors occurred.
+Topic:dummy returned an error of UnknownTopicOrPartition.
+kafka topic 'dummy' is invalid [detected by Zookeeper] - not present on server
+One or more errors occurred.
+Topic:jnmtopic returned an error of UnknownTopicOrPartition.
+kafka topic 'jnmtopic' is invalid [detected by Zookeeper] - not present on server
+Thread was being aborted.
+topics for testing 
+	dummy, jnmtopic, JnmTopic, fusetest, fusetest1, fusetest2, fusetest3, Claim, Condition, Coverage, DiagnosticReport, Encounter, Immunization, Location, Medication, Organization, Patient, Practitioner, Procedure
+
+0. dummy
+	 kafka topic 'dummy' is invalid [detected by Zookeeper] - not present on server
+1. jnmtopic
+	 kafka topic 'jnmtopic' is invalid [detected by Zookeeper] - not present on server
+2. JnmTopic
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+file://C:/a_work/vsix27/ElasticSearchDemo/src/Kafka.Features/bin/Debug/data
+-> error:   Expected: False
+  But was:  True
+
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("fusetest",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka fusetest
+-> done: KafkaSteps.Given_I_have_kafka_Organization("fusetest") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("fusetest2",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka fusetest2
+-> done: KafkaSteps.Given_I_have_kafka_Organization("fusetest2") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("Practitioner",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka Practitioner
+-> done: KafkaSteps.Given_I_have_kafka_Organization("Practitioner") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("Location",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka Location
+-> done: KafkaSteps.Given_I_have_kafka_Organization("Location") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("Patient",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka Patient
+-> done: KafkaSteps.Given_I_have_kafka_Organization("Patient") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("Procedure",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka Procedure
+-> done: KafkaSteps.Given_I_have_kafka_Organization("Procedure") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("Organization",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka Organization
+-> done: KafkaSteps.Given_I_have_kafka_Organization("Organization") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("Claim",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka Claim
+-> done: KafkaSteps.Given_I_have_kafka_Organization("Claim") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToConsumeKafkaTopicFrom172_26_8_26_29("Coverage",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+  | 172.26.8.27:9092 |
+  | 172.26.8.28:9092 |
+  | 172.26.8.29:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have kafka Coverage
+-> done: KafkaSteps.Given_I_have_kafka_Organization("Coverage") (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then I should retrieve last 2 messages in -1 seconds
+Thread was being aborted.
+-> error: The given key was not present in the dictionary.
+***** Kafka.Features.KafkaBrokersFeature.AbleToGetDataFolder
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker     |
+  | 172.26.8.26:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+When I call kafka server
+-> done: KafkaSteps.When_I_call_kafka_server() (0.0s)
+Then data folder is created if missing
+file://C:/a_work/vsix27/ElasticSearchDemo/src/Kafka.Features/bin/Debug/data
+-> done: KafkaSteps.Then_data_folder_is_created_if_missing() (0.0s)
+***** Kafka.Features.KafkaBrokersFeature.AbleToParseJsonMessageCondition
+Given I have json file
+-> done: KafkaSteps.Given_I_have_json_file() (0.0s)
+When I parse it
+expected:
+	<?xml version='1.0'?><Base><Person>me</Person><Person>you</Person><Time>7/15/2016 1:43:26 PM</Time></Base>
+-> done: KafkaSteps.When_I_parse_it() (0.0s)
+Then I should be find in file <messages\Condition\item_257.json> matching json values
+  --- table step argument ---
+  | jsonpath                                 | value    |
+  | category.coding[?(@.code=='ccc')].system | xxx      |
+  | code.coding[0].code                      | V04.81   |
+  | category.coding[0].code                  | 55607006 |
+  | category.coding[0].primary               | True     |
+  | onset.onsetDateTime.offset               | 0        |
+-> error: Unexpected character encountered while parsing value: |. Path '', line 1, position 1.
+***** Kafka.Features.KafkaBrokersFeature.AbleToParseJsonMessagePatient
+Given I have json file
+-> done: KafkaSteps.Given_I_have_json_file() (0.0s)
+When I parse it
+expected:
+	<?xml version='1.0'?><Base><Person>me</Person><Person>you</Person><Time>7/15/2016 1:43:26 PM</Time></Base>
+-> done: KafkaSteps.When_I_parse_it() (0.0s)
+Then I should be find in file <messages\Patient\item_215.json> matching json values
+  --- table step argument ---
+  | jsonpath                  | value             |
+  | name[0].family[0]         | LAMBERT           |
+  | address[0].addressLine[0] | 7881 Metus Street |
+  | address[0].addressLine[1] | none              |
+  | address[0].addressLine[2] | null              |
+-> done: KafkaSteps.Then_I_should_be_find_in_file_P0_matching_json_values("<messages\Patient...", <table>) (0.2s)
+***** Kafka.Features.KafkaBrokersFeature.AbleToParseXmlMessageWithXmlResolver
+Given I have xml content
+-> done: KafkaSteps.Given_I_have_json_file() (0.0s)
+When I load it
+expected:
+	<?xml version='1.0'?><Base><Person>me</Person><Person>you</Person><Time>7/15/2016 1:43:26 PM</Time></Base>
+-> done: KafkaSteps.When_I_parse_it() (0.0s)
+Then It should be loaded as xmldoc.Load(xmlreader) loaded with DtdProcessing.Prohibit
+loaded file with DtdProcessing.Prohibit:
+<?xml version="1.0"?><Base><Person>me</Person><Person>you</Person><Time>7/15/2016 1:43:26 PM</Time></Base>
+loaded stream:
+<Base>
+  <Person>me</Person>
+  <Person>you</Person>
+  <Time>7/15/2016 1:43:26 PM</Time>
+</Base>
+-> done: KafkaSteps.Then_It_should_be_loaded_with_DtdProcessing_Prohibit() (0.5s)
+And It should be loaded as xmldoc.Load(string) with CustomUrlResovler
+expected stream:
+	<?xml version='1.0'?><Base><Person>me</Person><Person>you</Person><Time>7/15/2016 1:43:26 PM</Time></Base>
+loaded file with CustomUrlResovler:
+<?xml version="1.0"?><Base><Person>me</Person><Person>you</Person><Time>7/15/2016 1:43:26 PM</Time></Base>
+loaded stream:
+<Base>
+  <Person>me</Person>
+  <Person>you</Person>
+  <Time>7/15/2016 1:43:26 PM</Time>
+</Base>
+-> done: KafkaSteps.Then_It_should_be_loaded_with_CustomUrlResovler() (0.1s)
+And It should be loaded as xdocument.Load(xmlreader) with DtdProcessing.Prohibit
+-> done: KafkaSteps.Then_It_should_be_loaded_as_xdocument_Load_xmlreader_with_DtdProcessing_Prohibit() (0.0s)
+And It should be deserialized as xmlSerializer.Deserialize(xmlreader) with DtdProcessing.Prohibit
+-> done: KafkaSteps.Then_It_should_be_deserialized_as_xmlSerializer_Deserialize_xmlreader_with_DtdProcessing_Prohibit() (0.8s)
+And xml file should be cleaned
+-> done: KafkaSteps.Then_xml_file_should_be_cleaned() (0.0s)
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_172_26_11_1359092
+Given I have Random expressions
+ ==================  Random_expressions saved in Context; Items 5
+ ==================  Random_expressions saved in Context; first 'main_0_abbd2f0a71ec402091083383b59bc84d':{   
+                    'member':0,  'date': '8/28/2016 1:43:28 PM',
+                    'person': {'fistname':'ome0v00jokp', 'lastname':'wb0zsgckfyy' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_4_57d9aa0a6db046a4a14621374a157ccd':{   
+                    'member':4,  'date': '8/28/2016 1:43:28 PM',
+                    'person': {'fistname':'0lefewnyztk', 'lastname':'au1zy1x4ltq' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka 172.26.11.135:9092 server to fusetest topic
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #5 messages.  Buffered:5 AsyncCount:0
+Completed send of batch: 5. await Buffered:0 AsyncCount:0
+-> done: KafkaSteps.When_I_send_it_to_kafka("172.26.11.135:9092", "fusetest") (7.6s)
+Then I should consume it in 0 seconds
+ ==================  Expect messages Start - befofe consuming from Offset = 0; Count = 5 
+ ==================  Expect messages End   ==================
+ ============ looking to match result.Item1 and 
+	'main_0_abbd2f0a71ec402091083383b59bc84d':{   
+                    'member':0,  'date': '8/28/2016 1:43:28 PM',
+                    'person': {'fistname':'ome0v00jokp', 'lastname':'wb0zsgckfyy' }
+                }
+topics for testing 
+	fusetest
+
+0. fusetest
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+	 PartitionId: 0; FirstOffset: 0; Items: 5 delay: 0
+
+1. fusetest2
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+2. Practitioner
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+3. Location
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+4. Patient
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+5. Procedure
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+6. Organization
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+7. Claim
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+8. Coverage
+	 cannot connect to the Kafka Broker(s) 
+		172.26.8.26:9092
+		172.26.8.27:9092
+		172.26.8.28:9092
+		172.26.8.29:9092, exiting...
+-> error:   Expected: True
+  But was:  False
+
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_Shortfusedev
+Given I have Random expressions
+ ==================  Random_expressions saved in Context; Items 6
+ ==================  Random_expressions saved in Context; first 'main_0_95d1109fedce497a8f6cd46178d8b6b5':{   
+                    'member':0,  'date': '10/16/2016 1:43:41 PM',
+                    'person': {'fistname':'imdqxrblatw', 'lastname':'saxqiv4lhto' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_5_cdb57b56ccb24988bc6bba940e15da00':{   
+                    'member':5,  'date': '10/16/2016 1:43:41 PM',
+                    'person': {'fistname':'f1m4bmsfngq', 'lastname':'uworyo4kegl' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to fusetest topic
+Thread was being aborted.
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #6 messages.  Buffered:6 AsyncCount:0
+-> error: One or more errors occurred.
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_Shortfusedev_Dn8_Dn11("fusetest",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker                                     |
+  | shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+  | shortfusedev-dn11.westus.cloudapp.azure.com:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have Random expressions
+ ==================  Random_expressions saved in Context; Items 2
+ ==================  Random_expressions saved in Context; first 'main_0_f725b4e380fc4bfda4479278ef4c44c3':{   
+                    'member':0,  'date': '4/8/2016 1:45:09 PM',
+                    'person': {'fistname':'nxxzcxbivdb', 'lastname':'kvtikkgsbm3' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_1_f8a7d5d0d5db43a0b765784968ebb4a8':{   
+                    'member':1,  'date': '4/8/2016 1:45:09 PM',
+                    'person': {'fistname':'bahgfgcrx2z', 'lastname':'okriscox4os' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka 172.26.8.26:9092 server to fusetest topic
+Thread was being aborted.
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #2 messages.  Buffered:2 AsyncCount:0
+-> error: One or more errors occurred.
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_Shortfusedev_Dn8_Dn11("fusetest2",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker                                     |
+  | shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+  | shortfusedev-dn11.westus.cloudapp.azure.com:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have Random expressions
+ ==================  Random_expressions saved in Context; Items 6
+ ==================  Random_expressions saved in Context; first 'main_0_7874b8c440f741eb81dae10df1b05fed':{   
+                    'member':0,  'date': '10/12/2016 1:49:47 PM',
+                    'person': {'fistname':'zmufs23wtgy', 'lastname':'5az4qxwre3o' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_5_1e369217c80b4831823c105b0310070d':{   
+                    'member':5,  'date': '10/12/2016 1:49:47 PM',
+                    'person': {'fistname':'wkcx2d13a51', 'lastname':'iomflnv4akz' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka 172.26.8.26:9092 server to fusetest2 topic
+Thread was being aborted.
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #6 messages.  Buffered:6 AsyncCount:0
+-> error: One or more errors occurred.
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_Shortfusedev_Dn8_Dn11("Patient",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker                                     |
+  | shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+  | shortfusedev-dn11.westus.cloudapp.azure.com:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have Random expressions
+ ==================  Random_expressions saved in Context; Items 3
+ ==================  Random_expressions saved in Context; first 'main_0_83b7a9778c4c43959389661d58bc9ca9':{   
+                    'member':0,  'date': '5/23/2016 1:54:26 PM',
+                    'person': {'fistname':'i4afem2ramp', 'lastname':'5jhxsspk2vy' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_2_0f5a9b29034641fbade49b557e00e495':{   
+                    'member':2,  'date': '5/23/2016 1:54:26 PM',
+                    'person': {'fistname':'t5mi5dxrhqo', 'lastname':'co3uj31nm5g' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka 172.26.8.26:9092 server to Patient topic
+Thread was being aborted.
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #3 messages.  Buffered:3 AsyncCount:0
+-> error: One or more errors occurred.
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_Shortfusedev_Dn8_Dn11("Practitioner",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker                                     |
+  | shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+  | shortfusedev-dn11.westus.cloudapp.azure.com:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have Random expressions
+ ==================  Random_expressions saved in Context; Items 5
+ ==================  Random_expressions saved in Context; first 'main_0_a172d697b93c47b5b7fc85d48d97ee89':{   
+                    'member':0,  'date': '9/3/2016 1:59:04 PM',
+                    'person': {'fistname':'dxj5e5zsxxi', 'lastname':'240g0fap03w' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_4_cc7926e5853a4797af6f044f298aa69a':{   
+                    'member':4,  'date': '9/3/2016 1:59:04 PM',
+                    'person': {'fistname':'1vqdhus0tuk', 'lastname':'vbzhddwzp0w' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka 172.26.8.26:9092 server to Practitioner topic
+Thread was being aborted.
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #5 messages.  Buffered:5 AsyncCount:0
+-> error: One or more errors occurred.
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_Shortfusedev_Dn8_Dn11("Claim",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker                                     |
+  | shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+  | shortfusedev-dn11.westus.cloudapp.azure.com:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have Random expressions
+ ==================  Random_expressions saved in Context; Items 4
+ ==================  Random_expressions saved in Context; first 'main_0_d4626667da49454d93466478a825fe45':{   
+                    'member':0,  'date': '7/30/2016 2:03:43 PM',
+                    'person': {'fistname':'3ny4k3semt0', 'lastname':'etkg4nof4qo' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_3_d9a5cce4848546139f1c3b3defb42de1':{   
+                    'member':3,  'date': '7/30/2016 2:03:43 PM',
+                    'person': {'fistname':'5rheru4vixd', 'lastname':'afk2dmj2qku' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka 172.26.8.26:9092 server to Claim topic
+Thread was being aborted.
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #4 messages.  Buffered:4 AsyncCount:0
+-> error: One or more errors occurred.
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_Shortfusedev_Dn8_Dn11("Coverage",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker                                     |
+  | shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+  | shortfusedev-dn11.westus.cloudapp.azure.com:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have Random expressions
+ ==================  Random_expressions saved in Context; Items 6
+ ==================  Random_expressions saved in Context; first 'main_0_d5a7b95ec03d43e9903ed10b2929f0a1':{   
+                    'member':0,  'date': '9/26/2016 2:08:21 PM',
+                    'person': {'fistname':'sr3yzqcmi0z', 'lastname':'iy0brx1eayl' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_5_05502812b3e64661957dc94f2bd8fb2b':{   
+                    'member':5,  'date': '9/26/2016 2:08:21 PM',
+                    'person': {'fistname':'2smjofhgdze', 'lastname':'lkavntw2ytx' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka 172.26.8.26:9092 server to Coverage topic
+Thread was being aborted.
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #6 messages.  Buffered:6 AsyncCount:0
+-> error: One or more errors occurred.
+***** Kafka.Features.KafkaBrokersFeature.AbleToProduceAndConsumeKafka_Shortfusedev_Dn8_Dn11("Location",null)
+Given I have brokers for kafka
+  --- table step argument ---
+  | kafka broker                                     |
+  | shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
+  | shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
+  | shortfusedev-dn11.westus.cloudapp.azure.com:9092 |
+-> done: KafkaSteps.Given_I_have_kafka_brokers(<table>) (0.0s)
+And I have Random expressions
+ ==================  Random_expressions saved in Context; Items 4
+ ==================  Random_expressions saved in Context; first 'main_0_5a17e4cf4e614044be06f9010dcbd309':{   
+                    'member':0,  'date': '7/30/2016 2:13:00 PM',
+                    'person': {'fistname':'4ydal4un3q3', 'lastname':'bq1sb2nitqw' }
+                }
+ ==================  Random_expressions saved in Context; last 'main_3_4f698c3d724c4ddaab1ea1f2641358fa':{   
+                    'member':3,  'date': '7/30/2016 2:13:00 PM',
+                    'person': {'fistname':'s345uev4wbb', 'lastname':'a0uvzxhjx0b' }
+                }
+-> done: KafkaSteps.Given_I_have_Random_expressions() (0.0s)
+When I send it to kafka 172.26.8.26:9092 server to Location topic
+Thread was being aborted.
+ ==================  FirstOffset 0; Items 0 ==================
+Posted #4 messages.  Buffered:4 AsyncCount:0
