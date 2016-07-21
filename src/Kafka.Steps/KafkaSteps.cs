@@ -8,11 +8,8 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -55,16 +52,19 @@ namespace Kafka.Steps
             foreach (string s in s1.Replace(" ", "").Split(",;|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
                 string slist = s.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? s : "http://" + s;
+                slist += ".$$";
                 var ss = slist.Split("[]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                if (ss.Length == 3)
+
+                if (ss.Length == 3) // single occurence of []
                 {
                     var ssmid = ss[1].Split(" -".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     for (int i = int.Parse(ssmid[0]); i <= int.Parse(ssmid[1]); i++)
                         suri += $"{ss[0]}{i}{ss[2]},";
                     if (suri.EndsWith(",")) suri = suri.Substring(0, suri.Length - 1);
+                    suri = suri.Replace(".$$", "");
                 }
                 else
-                    suri += slist + ",";
+                    suri += slist.Replace(".$$", "") + ",";
             }
             KafkaUri = suri;
 
@@ -101,16 +101,13 @@ namespace Kafka.Steps
             ScenarioContext.Current["kafkaMessages"] = lst;
         }
 
-        [When(@"I send it to kafka (.*) server to (.*) topic")]
-        public void When_I_send_it_to_kafka(string kafkaServer, string topic)
+        [When(@"I send it to kafka (.*) topic")]
+        public void When_I_send_it_to_kafka(string topic)
         {
             ScenarioContext.Current["kafkaTopic"] = topic;
             ScenarioContext.Current["kafkaTopics"] = new List<string> { topic };
 
-            var brokers = new List<string> { kafkaServer };
-            ScenarioContext.Current["kafkaBrokers"] = brokers;
-            Assert.IsNotNull(brokers);
-
+            var brokers = KafkaUris.Select(o => o.Authority).ToList();
             var options = GetKafkaOptions(brokers);
 
             //create a producer to send messages with
@@ -303,7 +300,7 @@ namespace Kafka.Steps
                 //BackoffInterval=new TimeSpan (0,0,3),
                 //MaxWaitTimeForMinimumBytes = new TimeSpan(0, 0, 3),
             }, offsetPosition);
-           
+
             if (!topicJsons.ContainsKey(topic)) topicJsons[topic] = new List<string>();
 
             try
@@ -381,8 +378,8 @@ namespace Kafka.Steps
         [Given(@"I have topic list AcceptanceTest:KafkaTopicsAll for kafka")]
         public void Given_I_have_topic_list_AcceptanceTest_KafkaTopicsAll_for_kafka()
         {
-            ScenarioContext.Current["kafkaTopics"] = 
-                ConfigurationManager.AppSettings["AcceptanceTest:KafkaTopicsAll"].Split (" ,;".ToCharArray(),StringSplitOptions.RemoveEmptyEntries).ToList();
+            ScenarioContext.Current["kafkaTopics"] =
+                ConfigurationManager.AppSettings["AcceptanceTest:KafkaTopicsAll"].Split(" ,;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
 
@@ -419,7 +416,7 @@ namespace Kafka.Steps
             }
             ScenarioContext.Current["kafkaTopics"] = list;
         }
-            
+
         [Given("I have kafka (.*)")]
         public void Given_I_have_kafka_Organization(string topic)
         {
@@ -488,13 +485,13 @@ namespace Kafka.Steps
             catch (Exception ex) { Console.WriteLine(ex); }
             Console.WriteLine(" ================== end of DebugKafkaMessages " + info);
         }
-        
+
         public struct TopicOffset
         {
             public long FirstOffset;
             public long Items;
             public int PartitionId;
-            public string Topic;             
+            public string Topic;
             public TopicOffset(List<OffsetResponse> offsets)
             {
                 FirstOffset = offsets[0].Offsets.Last();
@@ -504,8 +501,9 @@ namespace Kafka.Steps
             }
         }
 
-        internal static string DebugOffset(TopicOffset to) {
-            return  $"topic {to.Topic,20}; FirstOffset: {to.FirstOffset,7}; "+
+        internal static string DebugOffset(TopicOffset to)
+        {
+            return $"topic {to.Topic,20}; FirstOffset: {to.FirstOffset,7}; " +
                 $"Items: {to.Items,7}; PartitionId: {to.PartitionId}\n";
         }
 
@@ -564,7 +562,7 @@ namespace Kafka.Steps
 
         internal long GetProducerOffset(Producer producer, string topic)
         {
-            var offsets = producer.GetTopicOffsetAsync(topic).Result;            
+            var offsets = producer.GetTopicOffsetAsync(topic).Result;
             return offsets[0].Offsets[0];
         }
 
@@ -622,7 +620,7 @@ namespace Kafka.Steps
                             topicJsons[topic] = new List<string> { $"cannot connect to the Kafka Broker(s) {uris}, exiting..." };
 
                             failed = true;
-                            break;                           
+                            break;
                         }
 
                         string tmsg = to.Topic == null
@@ -938,6 +936,33 @@ namespace Kafka.Steps
                 var found = (string)obj.SelectToken(jpath);
                 if (jval.Equals("null", StringComparison.OrdinalIgnoreCase)) jval = null;
                 Assert.AreEqual(found, jval);
+            }
+        }
+
+        [When(@"I read host file")]
+        public void When_I_read_file_P0()
+        {
+            var p0 = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "drivers/etc/hosts");
+            Assert.IsTrue(File.Exists(p0));
+            ScenarioContext.Current["host_lines"] = File.ReadAllLines(p0).ToList();
+        }
+
+        [Then]
+        public void Then_It_should_contain(Table table)
+        {
+
+            Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
+
+            var hostlines = ScenarioContext.Current["host_lines"] as List<string>;
+            var cleanlines = hostlines.Where(o => !string.IsNullOrWhiteSpace(o) && !o.Trim().StartsWith("#"))
+                  .Select(o => o.Trim().ToLower())
+                  .Select(o => regex.Replace(o, " ")).ToList();
+
+            foreach (var r in table.Rows)
+            {
+                string s = r[0].ToString(); // expect single spaces
+                Console.WriteLine("found in host: " + s);
+                Assert.IsTrue(cleanlines.Contains(s.ToLower()), "not found: " + s);
             }
         }
 

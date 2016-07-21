@@ -2,66 +2,43 @@
 	In order to avoid silly mistakes
 	As an Kafka amateur
 	I want to consume Kafka metadata
+
+Background: file C:\Windows\System32\drivers\etc\host 
+	should be updated (otherwise kafka brokers not visible) with
+	(added to see Kafka brokers (note from Fitzgerald, Kirk) )
+172.26.15.7 rhi-fuse-dev-cluster-kafka0.westus.cloudapp.azure.com rhi-fuse-dev-cluster-mn0.westus.cloudapp.azure.com
+172.26.15.5 rhi-fuse-dev-cluster-kafka1.westus.cloudapp.azure.com rhi-fuse-dev-cluster-mn1.westus.cloudapp.azure.com
+172.26.15.9 rhi-fuse-dev-cluster-kafka2.westus.cloudapp.azure.com rhi-fuse-dev-cluster-mn2.westus.cloudapp.azure.com
 	
 # test json path online
 # http://www.jsonquerytool.com/
 
 
 @FileProc_Kafka_produce
-Scenario: Able to produce and consume kafka - 172.26.11.135:9092
-  Given I have Random expressions
-  When I send it to kafka 172.26.11.135:9092 server to fusetest topic
-  Then I should consume it in 0 seconds
+Scenario: Able to resolve kafka broker names to ip in host file
+  Given I have brokers for kafka from AcceptanceTest:KafkaUri    
+  When I read host file  
+  Then It should contain
+    | ip machine                                                                                                 |
+    | 172.26.15.7 rhi-fuse-dev-cluster-kafka0.westus.cloudapp.azure.com rhi-fuse-dev-cluster-mn0.westus.cloudapp.azure.com |
+    | 172.26.15.5 rhi-fuse-dev-cluster-kafka1.westus.cloudapp.azure.com rhi-fuse-dev-cluster-mn1.westus.cloudapp.azure.com |
+    | 172.26.15.9 rhi-fuse-dev-cluster-kafka2.westus.cloudapp.azure.com rhi-fuse-dev-cluster-mn2.westus.cloudapp.azure.com |
+
 
 @FileProc_Kafka_produce
-Scenario: Able to produce and consume kafka - shortfusedev
-  Given I have Random expressions
-  When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to fusetest topic
-  Then I should consume it in 0 seconds
-  
-@FileProc_Kafka_produce
-Scenario Outline: Able to produce and consume kafka - shortfusedev.dn8-dn11
-  Given I have brokers for kafka  
-	| kafka broker                                     |
-	| shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
-	| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
-	| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
-	| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
-  And I have Random expressions
-  When I send it to kafka 172.26.8.26:9092 server to <topic> topic
+Scenario: Able to produce and consume kafka to topic - junk
+  Given I have brokers for kafka from AcceptanceTest:KafkaUri 	 
+    And I have Random expressions
+  When I send it to kafka junk topic
   Then I should consume it in 0 seconds
 
-Examples:
-   | topic        |
-   | fusetest     |
-   | fusetest2    |
-   | Patient      |
-   | Practitioner |
-   | Claim        |
-   | Coverage     |
-   | Location     |
-
-#fusetest, fusetest2, fusetopic2, test
-@FileProc_Kafka_produce
-Scenario: Able to produce and consume kafka - shortfusedev - to topic - fusetest
-  Given I have Random expressions
-  When I send it to kafka shortfusedev-dn9.westus.cloudapp.azure.com:9092 server to fusetest topic
-  Then I should consume it in 0 seconds
-
-
-# from zookeper 172.26.8.13:2181
 @FileProc_Kafka_consume
-Scenario: Able to consume kafka - shortfusedev
-  Given I have brokers for kafka  
-	| kafka broker                                     |
-	| shortfusedev-dn10.westus.cloudapp.azure.com:9092 |
-	| shortfusedev-dn9.westus.cloudapp.azure.com:9092  |
-	| shortfusedev-dn8.westus.cloudapp.azure.com:9092  |
-	| shortfusedev-dn11.westus.cloudapp.azure.com:9092 |	
+Scenario: Able to consume kafka - fusedev
+  Given I have brokers for kafka from AcceptanceTest:KafkaUri 	 
   And I have topics for kafka 
 	| topic               | info                               |
-	| fusetest            | 4 messages                         |
-	| fusetest2           | 4 messages                         |
+	| fusetest            | --                                 |
+	| junk                | 4 messages                         |
 	| Practitioner        | 10 messages                        |
 	| Patient             | 4 messages                         |
 	| Procedure           | 4 messages                         |
@@ -69,6 +46,7 @@ Scenario: Able to consume kafka - shortfusedev
 	| Claim               | 4 messages  v1                     |
 	| Coverage            | 2 messages  v1                     |
 	| Location            | 2 messages  v1                     |
+	| Logpoc              | 2 messages  v1                     |
 	| Condition           | FirstOffset: 258; Items: 7         |
 	| DiagnosticReport    | FirstOffset: 61; Items: 2 (53, 10) |
 	| Encounter           | 2 messages  v1                     |
@@ -76,6 +54,10 @@ Scenario: Able to consume kafka - shortfusedev
 	| Immunization        | FirstOffset: 129; Items: 3         |
 	| Medication          | FirstOffset: 396; Items: 4         |
 	| AllergyIntolerance  | FirstOffset: 51; Items: 8          |
+	| mt-event-mex        |                                    |
+	| mt-event-test       |                                    |
+	| mt-reindex          |                                    |
+
   When I call kafka server
   Then I should retrieve last 2 messages in -1 seconds
 # in log/output - for failed/timed out topics -search for '. The operation was canceled.' or '. The operation was canceled.'
@@ -83,39 +65,30 @@ Scenario: Able to consume kafka - shortfusedev
 @FileProc_Kafka_datafolder
 Scenario: Able to get data folder
   Given I have brokers for kafka 
-    | kafka broker     |
-	| 172.26.8.26:9092 |
+    | kafka broker      |
+    | 172.26.15.7:19092 |
+    #| 172.26.8.26:9092  |
   When I call kafka server
   Then data folder is created if missing
 
 @FileProc_Kafka_consume
-Scenario: Able to consume kafka all topics from 172.26.8.26-29
-  Given I have brokers for kafka 
-	| kafka broker     |
-	| 172.26.18.26:9092 |
-	| 172.26.118.27:9092 |
-	| 172.26.18.28:9092 |
-	| 172.26.18.29:9092 |	 
-   And I have topic list for kafka dummy, jnmtopic, JnmTopic, fusetest, Claim, 
-   And I have topic list for kafka Coverage, Immunization, Location,fusetest1, fusetest2, fusetest3
+Scenario: Able to consume kafka listed topics from app.config
+  Given I have brokers for kafka from AcceptanceTest:KafkaUri 	 
+   And I have topic list for kafka dummy, test1, junk, fusetest, Claim, 
+   And I have topic list for kafka Coverage, Immunization, Location,Logpoc
    And I have topic list for kafka Medication, Organization, Patient, Procedure, Practitioner
   When I call kafka server
   Then I should retrieve last 2 messages in -1 seconds
 
 @FileProc_Kafka_consume
-Scenario: Able to consume kafka all topics from app.config
+Scenario: Able to consume kafka config topics from app.config
   Given I have brokers for kafka from AcceptanceTest:KafkaUri 	 
     And I have topic list AcceptanceTest:KafkaTopicsAll for kafka
    Then I should retrieve last 2 messages in -1 seconds
 
 @FileProc_Kafka_consume
-Scenario Outline: Able to consume kafka topic from 172.26.8.26-29
-  Given I have brokers for kafka
-    | kafka broker     |
-	| 172.26.8.26:9092 |
-	| 172.26.8.27:9092 |
-	| 172.26.8.28:9092 |
-	| 172.26.8.29:9092 |	 
+Scenario Outline: Able to consume kafka topic from app.config
+  Given I have brokers for kafka from AcceptanceTest:KafkaUri 	 
   And I have kafka <topic>    
   When I call kafka server
   Then I should retrieve last 2 messages in -1 seconds
@@ -123,7 +96,7 @@ Scenario Outline: Able to consume kafka topic from 172.26.8.26-29
 Examples:
     | topic        |  
     | fusetest     |  
-    | fusetest2    |  
+    | junk         |  
     | Practitioner |  
     | Location     |  
     | Patient      | 
