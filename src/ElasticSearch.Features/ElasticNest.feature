@@ -1,4 +1,5 @@
-﻿Feature: ElasticSearch using NEST package
+﻿@Elastic_NEST
+Feature: ElasticSearch using NEST package
 	In order to proof concept 
 	I want to demonstrated CRUD operations 
 

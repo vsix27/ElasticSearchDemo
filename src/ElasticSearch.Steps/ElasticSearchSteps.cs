@@ -101,7 +101,8 @@ namespace ElasticTest.Steps
 
             // make json
             string s = string.Empty;
-            foreach (var row in table.Rows) s += row[0];
+            foreach (var row in table.Rows)
+                s += row[0].Replace("<GUID>", Guid.NewGuid().ToString("N"));
 
             if (!ScenarioNest)
             {

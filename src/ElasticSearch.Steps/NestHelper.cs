@@ -1,5 +1,6 @@
 ﻿using Nest;
 using System;
+using System.Configuration;
 using System.Linq;
 
 namespace ElasticTest.Steps
@@ -14,7 +15,7 @@ namespace ElasticTest.Steps
             get
             {
                 if (string.IsNullOrEmpty(_elasticUri))
-                    _elasticUri = "http://localhost:9200";
+                    _elasticUri = ConfigurationManager.AppSettings["ElasticUri"];// "http://localhost:9200";
                 return _elasticUri;
             }
             set { _elasticUri = value; }

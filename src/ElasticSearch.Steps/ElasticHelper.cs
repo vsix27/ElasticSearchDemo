@@ -1,7 +1,7 @@
 ﻿using Elasticsearch.Net;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,13 +11,16 @@ namespace ElasticTest.Steps
     {
         private string _elasticUri;
 
-        /// <summary> "http://localhost:9200" </summary>
+        /// <summary> 
+        /// http://localhost:9200 
+        /// http://172.26.15.7:9200
+        /// </summary>
         public string ElasticUri
         {
             get
             {
                 if (string.IsNullOrEmpty(_elasticUri))
-                    _elasticUri = "http://localhost:9200";
+                    _elasticUri = ConfigurationManager.AppSettings["ElasticUri"];// "http://localhost:9200";
                 return _elasticUri;
             }
             set { _elasticUri = value; }
