@@ -25,14 +25,9 @@ if exist app.dev.config copy app.dev.config bin\Debug\%name%.dll.config
 
 set Path=%path%;C:\Program Files (x86)\NUnit 2.6.4\bin\;
 cd bin\Debug\
-START /WAIT "nunit-console.exe /labels /out=TestResult.txt /xml=TestResult.xml %name%.dll"
-::nunit-console.exe|more /labels /out=TestResult.txt /xml=TestResult.xml %name%.dll
-::nunit-console.exe|echo /labels /out=TestResult.txt /xml=TestResult.xml %name%.dll
-
+nunit-console.exe /labels /out=TestResult.txt /xml=TestResult.xml %name%.dll
 ..\..\..\packages\SpecFlow.1.9.0\tools\specflow.exe nunitexecutionreport "%proj%" /out:_Report.html
 
 :: report will be created in bin\Debug\ folder
 
 start _Report.html
-
-:: pause

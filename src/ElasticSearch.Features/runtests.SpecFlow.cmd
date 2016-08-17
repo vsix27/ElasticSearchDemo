@@ -8,6 +8,11 @@ set projDll=%name%.dll
 
 @echo having valid app.dev.config file OR valid bin\Debug\%name%.dll.config
 @echo and compiled bin\Debug\%name%.dll - runs tests creates specflow html report and opens it in default browser
+@echo.......................................................................
+@echo.
+@echo running tests for %name%
+@echo.
+@echo.......................................................................
 
 :: add specflow.exe.config config file for higher framework version
 set spconfig=..\packages\SpecFlow.1.9.0\tools\specflow.exe.config
